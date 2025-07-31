@@ -4,26 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2bb4dc5a-4280-44a5-a8e3-4a5fc07717b4" name="Changes" comment="initialization tasks">
-      <change afterPath="$PROJECT_DIR$/data/community_to_council.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/community_to_school.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/community_to_tract.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/council_to_school.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/council_to_tract.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/shapefiles/nyct/nyct2020.dbf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/shapefiles/nyct/nyct2020.prj" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/shapefiles/nyct/nyct2020.shp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/shapefiles/nyct/nyct2020.shp.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/shapefiles/nyct/nyct2020.shx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/shapefiles/nysd/NYC_School_Districts.cpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/shapefiles/nysd/NYC_School_Districts.dbf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/shapefiles/nysd/NYC_School_Districts.prj" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/shapefiles/nysd/NYC_School_Districts.shp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/shapefiles/nysd/NYC_School_Districts.shx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/nycohm/crosswalk.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/nycohm/join.py" afterDir="false" />
+    <list default="true" id="2bb4dc5a-4280-44a5-a8e3-4a5fc07717b4" name="Changes" comment="development">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/web_sources.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/web_sources.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/nycohm/join.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/nycohm/join.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -64,6 +47,7 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "Python.crosswalk.executor": "Run",
+    "Python.join.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "git-widget-placeholder": "main",
@@ -85,7 +69,7 @@
       <recent name="$PROJECT_DIR$/data/shapefiles/nycc" />
     </key>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Python.join">
     <configuration name="crosswalk" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="nycohm" />
       <option name="ENV_FILES" value="" />
@@ -109,8 +93,32 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="join" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="nycohm" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src/nycohm" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/nycohm/join.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.join" />
         <item itemvalue="Python.crosswalk" />
       </list>
     </recent_temporary>
@@ -132,7 +140,7 @@
       <option name="presentableId" value="Default" />
       <updated>1753978225570</updated>
       <workItem from="1753978226587" duration="751000" />
-      <workItem from="1753978989007" duration="10124000" />
+      <workItem from="1753978989007" duration="12929000" />
     </task>
     <task id="LOCAL-00001" summary="create repo">
       <option name="closed" value="true" />
@@ -158,7 +166,15 @@
       <option name="project" value="LOCAL" />
       <updated>1753988711006</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="development">
+      <option name="closed" value="true" />
+      <created>1753994448479</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1753994448479</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -178,9 +194,11 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="create repo" />
     <MESSAGE value="initialization tasks" />
-    <option name="LAST_COMMIT_MESSAGE" value="initialization tasks" />
+    <MESSAGE value="development" />
+    <option name="LAST_COMMIT_MESSAGE" value="development" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/nycohm$join.coverage" NAME="join Coverage Results" MODIFIED="1753996752544" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/nycohm" />
     <SUITE FILE_PATH="coverage/nycohm$crosswalk.coverage" NAME="crosswalk Coverage Results" MODIFIED="1753994326321" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/nycohm" />
   </component>
 </project>
