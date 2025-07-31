@@ -4,27 +4,38 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2bb4dc5a-4280-44a5-a8e3-4a5fc07717b4" name="Changes" comment="create repo">
-      <change afterPath="$PROJECT_DIR$/data/Enrollment_Capacity_And_Utilization_Reports_20250731.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/HousingDB_post2010.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/New York_36_transit_census_tract_2022.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/shapefiles/nycc/nycc.dbf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/shapefiles/nycc/nycc.prj" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/shapefiles/nycc/nycc.shp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/shapefiles/nycc/nycc.shp.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/shapefiles/nycc/nycc.shx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/shapefiles/nycd/nycd.dbf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/shapefiles/nycd/nycd.prj" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/shapefiles/nycd/nycd.shp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/shapefiles/nycd/nycd.shp.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/shapefiles/nycd/nycd.shx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docs/web_sources.md" afterDir="false" />
+    <list default="true" id="2bb4dc5a-4280-44a5-a8e3-4a5fc07717b4" name="Changes" comment="initialization tasks">
+      <change afterPath="$PROJECT_DIR$/data/community_to_council.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/community_to_school.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/community_to_tract.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/council_to_school.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/council_to_tract.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/shapefiles/nyct/nyct2020.dbf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/shapefiles/nyct/nyct2020.prj" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/shapefiles/nyct/nyct2020.shp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/shapefiles/nyct/nyct2020.shp.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/shapefiles/nyct/nyct2020.shx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/shapefiles/nysd/NYC_School_Districts.cpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/shapefiles/nysd/NYC_School_Districts.dbf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/shapefiles/nysd/NYC_School_Districts.prj" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/shapefiles/nysd/NYC_School_Districts.shp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/shapefiles/nysd/NYC_School_Districts.shx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/nycohm/crosswalk.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/nycohm/join.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/web_sources.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/web_sources.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -52,6 +63,7 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "Python.crosswalk.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "git-widget-placeholder": "main",
@@ -66,10 +78,42 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/data/shapefiles/nyct" />
+      <recent name="$PROJECT_DIR$/data/shapefiles/nysd" />
+      <recent name="$PROJECT_DIR$/data" />
       <recent name="$PROJECT_DIR$/data/shapefiles/nycd" />
       <recent name="$PROJECT_DIR$/data/shapefiles/nycc" />
-      <recent name="$PROJECT_DIR$/data" />
     </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="crosswalk" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="nycohm" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src/nycohm" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/nycohm/crosswalk.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.crosswalk" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
@@ -88,7 +132,7 @@
       <option name="presentableId" value="Default" />
       <updated>1753978225570</updated>
       <workItem from="1753978226587" duration="751000" />
-      <workItem from="1753978989007" duration="4206000" />
+      <workItem from="1753978989007" duration="10124000" />
     </task>
     <task id="LOCAL-00001" summary="create repo">
       <option name="closed" value="true" />
@@ -106,7 +150,15 @@
       <option name="project" value="LOCAL" />
       <updated>1753978534915</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="initialization tasks">
+      <option name="closed" value="true" />
+      <created>1753988711006</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1753988711006</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -125,6 +177,10 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="create repo" />
-    <option name="LAST_COMMIT_MESSAGE" value="create repo" />
+    <MESSAGE value="initialization tasks" />
+    <option name="LAST_COMMIT_MESSAGE" value="initialization tasks" />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/nycohm$crosswalk.coverage" NAME="crosswalk Coverage Results" MODIFIED="1753994326321" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/nycohm" />
   </component>
 </project>
