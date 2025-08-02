@@ -137,3 +137,6 @@ def aggregate_housing_data(file_path: str) -> pd.DataFrame:
 # Example usage:
 aggregated_data = aggregate_housing_data('../../data/standardized/merged_housing_data.csv')
 print(aggregated_data.head(50).to_string())
+
+# Save the aggregated data to the standardized directory
+aggregated_data.to_csv('../../data/standardized/aggregated_housing_data.csv', index=False)
