@@ -113,13 +113,34 @@ def join_sets():
     affordable_df = connect_bq().query('SELECT * FROM `nycohm.processed.Affordable_Housing_Production_by_Building_20250731`').to_dataframe()
 
     # Join on community district and council district
-    joined_df = housing_df.merge(affordable_df, on=['community_district', 'council_district'], how='left')
+    joined_df = housing_df.merge(affordable_df, on=['community_district', 'council_district','BBL'], how='left')
 
     logging.info(joined_df.head(20).to_string())
 
     # Load the joined dataset
     load_bq(joined_df, 'nycohm', 'processed', 'nycohm_main')
 
+def check_metrics():
+    """
+    Check the metrics of the joined dataset.
+    """
+
+    # Load the joined dataset
+    joined_df = connect_bq().query('SELECT * FROM `nycohm.processed.nycohm_main`').to_dataframe()
+
+    # Check total rows
+    total_rows = len(joined_df)
+    logging.info(f'Total rows in dataset: {total_rows}')
+
+    # Calculate housing units delivered
+    housing_units_delivered = joined_df[joined_df['CompltYear'].notna()]['ClassANet'].sum()
+    logging.info(f'Total housing units delivered: {housing_units_delivered}')
+
+    #Calculate affordable housing units delivered
+    affordable_units_delivered = joined_df[joined_df['CompltYear'].notna()]['All_Counted_Units'].sum()
+    logging.info(f'Total affordable housing units delivered: {affordable_units_delivered}')
+
 # process_housing()
 # process_affordable()
 # join_sets()
+check_metrics()
