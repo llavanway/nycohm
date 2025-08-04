@@ -2,9 +2,11 @@ import pandas as pd
 import os
 import logging
 import geopandas as gpd
+from helpers import configure_logging
+from helpers import connect_bq
 
-# Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+# # Configure logging
+# logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 def join_housing_datasets(housing_file_path: str, affordable_file_path: str) -> pd.DataFrame:
     """
@@ -18,8 +20,13 @@ def join_housing_datasets(housing_file_path: str, affordable_file_path: str) -> 
     pd.DataFrame: Merged DataFrame containing data from both datasets.
     """
     # Load the datasets
-    housing_df = pd.read_csv(housing_file_path, low_memory=False)
-    affordable_df = pd.read_csv(affordable_file_path, low_memory=False)
+    # housing_df = pd.read_csv(housing_file_path, low_memory=False)
+    # affordable_df = pd.read_csv(affordable_file_path, low_memory=False)
+    client = connect_bq()
+    query_housing_df = 'SELECT * FROM `nycohm.ingest.HousingDB_post2010`'
+    housing_df = client.query(query_housing_df).to_dataframe()
+    query_affordable = 'SELECT * FROM `nycohm.ingest.Affordable_Housing_Production_by_Building_20250731`'
+    affordable_df = client.query(query_affordable).to_dataframe()
 
     logging.info(f"Shape of housing_df: {housing_df.shape}")
     logging.info(f"Shape of affordable_df: {affordable_df.shape}")
@@ -108,15 +115,15 @@ def join_housing_datasets(housing_file_path: str, affordable_file_path: str) -> 
     return merged_df
 
 # Example usage:
-# merged_data = join_housing_datasets(
-#     '../../data/standardized/HousingDB_post2010_standardized.csv',
-#     '../../data/standardized/Affordable_Housing_Production_by_Building_standardized.csv'
-# )
-#
-# print(merged_data.sample(20).to_string())
+merged_data = join_housing_datasets(
+    '../../data/standardized/HousingDB_post2010_standardized.csv',
+    '../../data/standardized/Affordable_Housing_Production_by_Building_standardized.csv'
+)
+
+print(merged_data.sample(20).to_string())
 
 # Save the merged data to the standardized directory
-# merged_data.to_csv('../../data/standardized/merged_housing_data.csv', index=False)
+merged_data.to_csv('../../data/standardized/merged_housing_data.csv', index=False)
 
 
 def aggregate_housing_data(file_path: str) -> pd.DataFrame:

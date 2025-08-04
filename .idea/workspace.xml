@@ -5,9 +5,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2bb4dc5a-4280-44a5-a8e3-4a5fc07717b4" name="Changes" comment="development">
-      <change afterPath="$PROJECT_DIR$/src/nycohm/helpers/connect_bq.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/nycohm/helpers/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/nycohm/helpers/load_bq.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/nycohm/helpers/log_config.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/nycohm/helpers/process_datasets.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/nycohm/helpers.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/nycohm/helpers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/nycohm/crosswalk.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/nycohm/deprecated/crosswalk.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/nycohm/helpers.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/nycohm/deprecated/helpers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/nycohm/helpers/connect_bq.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/nycohm/helpers/connect_bq.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/nycohm/join.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/nycohm/deprecated/join.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/nycohm/standardize_keys.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/nycohm/deprecated/standardize_keys.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -36,6 +43,9 @@
     &quot;accountId&quot;: &quot;094bd18c-1ec6-4076-8d49-bc4a2144c629&quot;
   }
 }</component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 2
 }</component>
@@ -47,10 +57,16 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "Python.bqt.executor": "Run",
+    "Python.bqt2.executor": "Run",
+    "Python.connect_bq.executor": "Debug",
     "Python.crosswalk.executor": "Run",
     "Python.helpers.executor": "Run",
     "Python.join.executor": "Run",
+    "Python.process_datasets.executor": "Run",
+    "Python.process_keys.executor": "Run",
     "Python.standardize_keys.executor": "Run",
+    "Python.test.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "git-widget-placeholder": "main",
@@ -65,29 +81,102 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/nycohm/deprecated" />
       <recent name="$PROJECT_DIR$/data/shapefiles/nyct" />
       <recent name="$PROJECT_DIR$/data/shapefiles/nysd" />
       <recent name="$PROJECT_DIR$/data" />
       <recent name="$PROJECT_DIR$/data/shapefiles/nycd" />
-      <recent name="$PROJECT_DIR$/data/shapefiles/nycc" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.helpers">
-    <configuration name="crosswalk" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+  <component name="RunManager" selected="Python.process_datasets">
+    <configuration default="true" type="PythonConfigurationType" factoryName="Python">
       <module name="nycohm" />
       <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
+        <env name="GOOGLE_APPLICATION_CREDENTIALS" value="$PROJECT_DIR$/credentials/bigquery-key.json" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src/nycohm" />
+      <option name="SDK_NAME" value="Python 3.12 (nycohm)" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="bqt" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="nycohm" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="GOOGLE_APPLICATION_CREDENTIALS" value="credentials/bigquery-key.json" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src/nycohm/helpers" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/nycohm/crosswalk.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/nycohm/helpers/bqt.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="bqt2" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="nycohm" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+        <env name="GOOGLE_APPLICATION_CREDENTIALS" value="$PROJECT_DIR$/credentials/bigquery-key.json" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src/nycohm/helpers" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/nycohm/helpers/bqt2.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="connect_bq" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="nycohm" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+        <env name="GOOGLE_APPLICATION_CREDENTIALS" value="credentials/bigquery-key.json" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src/nycohm/helpers" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/nycohm/helpers/connect_bq.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -110,7 +199,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/nycohm/helpers.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/nycohm/deprecated/helpers.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -119,21 +208,23 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="join" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="process_datasets" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="nycohm" />
       <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
+        <env name="GOOGLE_APPLICATION_CREDENTIALS" value="$PROJECT_DIR$/credentials/bigquery-key.json" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src/nycohm" />
+      <option name="SDK_NAME" value="Python 3.12 (nycohm)" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src/nycohm/helpers" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/nycohm/join.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/nycohm/helpers/process_datasets.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -142,35 +233,20 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="standardize_keys" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="nycohm" />
-      <option name="ENV_FILES" value="" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src/nycohm" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/nycohm/standardize_keys.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
+    <list>
+      <item itemvalue="Python.process_datasets" />
+      <item itemvalue="Python.bqt2" />
+      <item itemvalue="Python.bqt" />
+      <item itemvalue="Python.connect_bq" />
+      <item itemvalue="Python.helpers" />
+    </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.process_datasets" />
+        <item itemvalue="Python.bqt2" />
         <item itemvalue="Python.helpers" />
-        <item itemvalue="Python.standardize_keys" />
-        <item itemvalue="Python.join" />
-        <item itemvalue="Python.crosswalk" />
+        <item itemvalue="Python.bqt" />
+        <item itemvalue="Python.connect_bq" />
       </list>
     </recent_temporary>
   </component>
@@ -191,7 +267,8 @@
       <option name="presentableId" value="Default" />
       <updated>1753978225570</updated>
       <workItem from="1753978226587" duration="751000" />
-      <workItem from="1753978989007" duration="30517000" />
+      <workItem from="1753978989007" duration="31361000" />
+      <workItem from="1754315142223" duration="14141000" />
     </task>
     <task id="LOCAL-00001" summary="create repo">
       <option name="closed" value="true" />
@@ -265,7 +342,15 @@
       <option name="project" value="LOCAL" />
       <updated>1754236504272</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="development">
+      <option name="closed" value="true" />
+      <created>1754314523152</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1754314523152</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -290,8 +375,13 @@
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/nycohm$join.coverage" NAME="join Coverage Results" MODIFIED="1753996752544" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/nycohm" />
-    <SUITE FILE_PATH="coverage/nycohm$helpers.coverage" NAME="helpers Coverage Results" MODIFIED="1754236472113" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/nycohm" />
+    <SUITE FILE_PATH="coverage/nycohm$bqt.coverage" NAME="bqt Coverage Results" MODIFIED="1754315904956" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/nycohm/helpers" />
+    <SUITE FILE_PATH="coverage/nycohm$bqt2.coverage" NAME="bqt2 Coverage Results" MODIFIED="1754328572344" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/nycohm/helpers" />
+    <SUITE FILE_PATH="coverage/nycohm$process_keys.coverage" NAME="process_datasets Coverage Results" MODIFIED="1754341445318" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/nycohm/helpers" />
+    <SUITE FILE_PATH="coverage/nycohm$helpers.coverage" NAME="helpers Coverage Results" MODIFIED="1754318263539" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/nycohm" />
     <SUITE FILE_PATH="coverage/nycohm$standardize_keys.coverage" NAME="standardize_keys Coverage Results" MODIFIED="1754079078561" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/nycohm" />
+    <SUITE FILE_PATH="coverage/nycohm$connect_bq.coverage" NAME="connect_bq Coverage Results" MODIFIED="1754315424319" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/nycohm/helpers" />
     <SUITE FILE_PATH="coverage/nycohm$crosswalk.coverage" NAME="crosswalk Coverage Results" MODIFIED="1753994326321" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/nycohm" />
+    <SUITE FILE_PATH="coverage/nycohm$test.coverage" NAME="test Coverage Results" MODIFIED="1754315657758" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/nycohm/helpers" />
   </component>
 </project>

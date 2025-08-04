@@ -1,15 +1,14 @@
 from google.cloud import bigquery
+import os
+from log_config import configure_logging
+import logging
 
-# Path to your JSON key file
-key_path = "bigquery-key.json"
+configure_logging()
 
-# Initialize the BigQuery client
-client = bigquery.Client.from_service_account_json(key_path)
+def connect_bq():
+    """
+    Connects to Google BigQuery using a service account key.
+    Returns a BigQuery client instance.
+    """
 
-# Run a sample query
-query = "SELECT name FROM `bigquery-public-data.usa_names.usa_1910_2013` LIMIT 10"
-query_job = client.query(query)
-
-# Display results
-for row in query_job:
-    print(row.name)
+    return bigquery.Client()
