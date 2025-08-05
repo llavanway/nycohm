@@ -13,10 +13,17 @@ Install the project in editable mode so Dagster commands can locate the package:
 pip install -e .
 ```
 
-Run the Dagster webserver or execute the job directly:
+Start the Dagster webserver and trigger the job from the UI:
 
 ```bash
 dagster dev
-# or
+```
+
+This uses the repository's `workspace.yaml` to load `nycohm.dagster_pipeline:defs`. Open
+<http://localhost:3000> in your browser and launch the `nyc_housing_job`.
+
+Alternatively, execute the job directly without the webserver:
+
+```bash
 dagster job execute -m nycohm.dagster_pipeline -j nyc_housing_job
 ```
