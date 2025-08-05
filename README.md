@@ -1,5 +1,5 @@
 # New York City Open Housing Metrics (NYCOHM)
-Providing insightful housing information to New Yorkers.
+Providing insightful housing information to New Yorkers. The current status of this project is pre-alpha.
 
 All are welcome to contribute.
 
