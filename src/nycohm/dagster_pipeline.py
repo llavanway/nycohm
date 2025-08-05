@@ -1,4 +1,5 @@
 from dagster import job, op, In, Out, Nothing
+from .helpers.process_datasets import check_metrics
 
 from .helpers.process_datasets import (
     process_housing,
@@ -35,12 +36,22 @@ def process_affordable_op(context):
 def join_sets_op(context, housing, affordable):
     join_sets(context.resources.bq_client)
 
+@op(
+    ins={"joined_data": In(Nothing)},
+    out=Out(Nothing),
+    description="Check metrics after joining datasets",
+    required_resource_keys={"bq_client"},
+)
+def check_metrics_op(context, joined_data):
+    check_metrics(context.resources.bq_client)
+
 
 @job(description="ETL job to process NYC housing datasets and join them")
 def nyc_housing_job():
     housing = process_housing_op()
     affordable = process_affordable_op()
-    join_sets_op(housing, affordable)
+    joined_data = join_sets_op(housing, affordable)
+    check_metrics_op(joined_data)
 
 
 # Dagster entry point
