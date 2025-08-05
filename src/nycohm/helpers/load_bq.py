@@ -1,12 +1,18 @@
 from google.cloud import bigquery
-from log_config import configure_logging
+from .log_config import configure_logging
 import logging
 import pandas as pd
-from connect_bq import connect_bq
 
 configure_logging()
 
-def load_bq(df, project_id, dataset_id, table_id):
+
+def load_bq(
+    df: pd.DataFrame,
+    project_id: str,
+    dataset_id: str,
+    table_id: str,
+    client: bigquery.Client,
+) -> None:
     """
     Save a DataFrame to a BigQuery table, letting BigQuery infer the schema.
 
@@ -15,8 +21,8 @@ def load_bq(df, project_id, dataset_id, table_id):
         project_id (str): The BigQuery project ID.
         dataset_id (str): The BigQuery dataset ID.
         table_id (str): The BigQuery table ID.
+        client (bigquery.Client): The BigQuery client to use.
     """
-    client = connect_bq()
     table_ref = f"{project_id}.{dataset_id}.{table_id}"
 
     # Check if the table exists
