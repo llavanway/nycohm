@@ -1,19 +1,18 @@
 from google.cloud import bigquery
 import os
-from log_config import configure_logging
+from .log_config import configure_logging
 import logging
 import pandas as pd
-from connect_bq import connect_bq
-from load_bq import load_bq
+from .connect_bq import connect_bq
+from .load_bq import load_bq
 
-def process_housing():
-    """
-    Process the DataFrame, then load it.
-    """
+
+def process_housing(client: bigquery.Client) -> None:
+    """Process the housing dataset and load the results."""
 
     # get housing data
     query = 'SELECT * FROM `nycohm.ingest.HousingDB_post2010`'
-    df = connect_bq().query(query).to_dataframe()
+    df = client.query(query).to_dataframe()
 
     #drop nulls
     df = df.dropna(subset=['CommntyDst'])
@@ -28,7 +27,7 @@ def process_housing():
     logging.info(df.head(20).to_string())
 
     # load data
-    load_bq(df, 'nycohm', 'processed', 'HousingDB_post2010')
+    load_bq(df, 'nycohm', 'processed', 'HousingDB_post2010', client)
 
 BORO_MAP = {
     'MN': 1,
@@ -60,14 +59,12 @@ def standardize_community_board(val: str | float | int | None):
             return pd.NA
     return int(val)
 
-def process_affordable():
-    """
-    Process the DataFrame to extract primary keys for housing data.
-    """
+def process_affordable(client: bigquery.Client) -> None:
+    """Process the affordable housing dataset and load the results."""
 
     # get affordable data
     query = 'SELECT * FROM `nycohm.ingest.Affordable_Housing_Production_by_Building_20250731`'
-    df = connect_bq().query(query).to_dataframe()
+    df = client.query(query).to_dataframe()
 
     # drop nulls
     # df = df.dropna(subset=['CommntyDst'])
@@ -101,24 +98,34 @@ def process_affordable():
     logging.info(df.head(20).to_string())
 
     # load data
-    load_bq(df, 'nycohm', 'processed', 'Affordable_Housing_Production_by_Building_20250731')
+    load_bq(
+        df,
+        'nycohm',
+        'processed',
+        'Affordable_Housing_Production_by_Building_20250731',
+        client,
+    )
 
-def join_sets():
-    """
-    Join the processed housing and affordable datasets.
-    """
+def join_sets(client: bigquery.Client) -> None:
+    """Join the processed housing and affordable datasets."""
 
     # Load processed datasets
-    housing_df = connect_bq().query('SELECT * FROM `nycohm.processed.HousingDB_post2010`').to_dataframe()
-    affordable_df = connect_bq().query('SELECT * FROM `nycohm.processed.Affordable_Housing_Production_by_Building_20250731`').to_dataframe()
+    housing_df = client.query(
+        'SELECT * FROM `nycohm.processed.HousingDB_post2010`'
+    ).to_dataframe()
+    affordable_df = client.query(
+        'SELECT * FROM `nycohm.processed.Affordable_Housing_Production_by_Building_20250731`'
+    ).to_dataframe()
 
     # Join on community district and council district
-    joined_df = housing_df.merge(affordable_df, on=['community_district', 'council_district','BBL'], how='left')
+    joined_df = housing_df.merge(
+        affordable_df, on=['community_district', 'council_district', 'BBL'], how='left'
+    )
 
     logging.info(joined_df.head(20).to_string())
 
     # Load the joined dataset
-    load_bq(joined_df, 'nycohm', 'processed', 'nycohm_main')
+    load_bq(joined_df, 'nycohm', 'processed', 'nycohm_main', client)
 
 def check_metrics():
     """
