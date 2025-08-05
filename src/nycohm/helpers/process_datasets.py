@@ -140,7 +140,8 @@ def check_metrics():
     affordable_units_delivered = joined_df[joined_df['CompltYear'].notna()]['All_Counted_Units'].sum()
     logging.info(f'Total affordable housing units delivered: {affordable_units_delivered}')
 
-# process_housing()
-# process_affordable()
-# join_sets()
-check_metrics()
+if __name__ == "__main__":
+    # process_housing()
+    # process_affordable()
+    # join_sets()
+    check_metrics()
