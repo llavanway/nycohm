@@ -1,5 +1,4 @@
 from google.cloud import bigquery
-import os
 from .log_config import configure_logging
 import logging
 import pandas as pd
@@ -127,13 +126,13 @@ def join_sets(client: bigquery.Client) -> None:
     # Load the joined dataset
     load_bq(joined_df, 'nycohm', 'processed', 'nycohm_main', client)
 
-def check_metrics():
+def check_metrics(client: bigquery.Client) -> None:
     """
     Check the metrics of the joined dataset.
     """
 
     # Load the joined dataset
-    joined_df = connect_bq().query('SELECT * FROM `nycohm.processed.nycohm_main`').to_dataframe()
+    joined_df = client.query('SELECT * FROM `nycohm.processed.nycohm_main`').to_dataframe()
 
     # Check total rows
     total_rows = len(joined_df)
@@ -151,4 +150,4 @@ if __name__ == "__main__":
     # process_housing()
     # process_affordable()
     # join_sets()
-    check_metrics()
+    check_metrics(connect_bq())

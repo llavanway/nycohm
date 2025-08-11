@@ -4,9 +4,6 @@ import os
 from .log_config import configure_logging
 import logging
 
-configure_logging()
-
-
 def connect_bq(credentials_path: str | None = None) -> bigquery.Client:
     """Return a BigQuery client using the provided credentials.
 

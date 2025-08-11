@@ -7,6 +7,9 @@
     <list default="true" id="2bb4dc5a-4280-44a5-a8e3-4a5fc07717b4" name="Changes" comment="development">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/nycohm/dagster_pipeline.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/nycohm/dagster_pipeline.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/nycohm/helpers/connect_bq.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/nycohm/helpers/connect_bq.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/nycohm/helpers/process_datasets.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/nycohm/helpers/process_datasets.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/workspace.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/workspace.yaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -47,30 +50,37 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Python.bqt.executor": "Run",
-    "Python.bqt2.executor": "Run",
-    "Python.connect_bq.executor": "Debug",
-    "Python.crosswalk.executor": "Run",
-    "Python.helpers.executor": "Run",
-    "Python.join.executor": "Run",
-    "Python.process_datasets.executor": "Run",
-    "Python.process_keys.executor": "Run",
-    "Python.standardize_keys.executor": "Run",
-    "Python.test.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "main",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "preferences.pluginManager",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Python.bqt.executor&quot;: &quot;Run&quot;,
+    &quot;Python.bqt2.executor&quot;: &quot;Run&quot;,
+    &quot;Python.connect_bq.executor&quot;: &quot;Debug&quot;,
+    &quot;Python.crosswalk.executor&quot;: &quot;Run&quot;,
+    &quot;Python.dagster_pipeline.executor&quot;: &quot;Run&quot;,
+    &quot;Python.helpers.executor&quot;: &quot;Run&quot;,
+    &quot;Python.join.executor&quot;: &quot;Run&quot;,
+    &quot;Python.process_datasets.executor&quot;: &quot;Run&quot;,
+    &quot;Python.process_keys.executor&quot;: &quot;Run&quot;,
+    &quot;Python.scratch.executor&quot;: &quot;Run&quot;,
+    &quot;Python.standardize_keys.executor&quot;: &quot;Run&quot;,
+    &quot;Python.test.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  },
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;bigquery&quot;
+    ]
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/src/nycohm/deprecated" />
@@ -80,7 +90,7 @@
       <recent name="$PROJECT_DIR$/data/shapefiles/nycd" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.process_datasets">
+  <component name="RunManager" selected="Python.dagster_pipeline">
     <configuration default="true" type="PythonConfigurationType" factoryName="Python">
       <module name="nycohm" />
       <option name="ENV_FILES" value="" />
@@ -98,29 +108,6 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="SCRIPT_NAME" value="" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="bqt" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="nycohm" />
-      <option name="ENV_FILES" value="" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="GOOGLE_APPLICATION_CREDENTIALS" value="credentials/bigquery-key.json" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src/nycohm/helpers" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/nycohm/helpers/bqt.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -153,22 +140,23 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="connect_bq" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="dagster_pipeline" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="nycohm" />
       <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
-        <env name="GOOGLE_APPLICATION_CREDENTIALS" value="credentials/bigquery-key.json" />
+        <env name="GOOGLE_APPLICATION_CREDENTIALS" value="$PROJECT_DIR$/credentials/bigquery-key.json" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src/nycohm/helpers" />
+      <option name="SDK_NAME" value="Python 3.12 (nycohm)" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src/nycohm" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/nycohm/helpers/connect_bq.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/nycohm/dagster_pipeline.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -225,20 +213,45 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="scratch" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="nycohm" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+        <env name="GOOGLE_APPLICATION_CREDENTIALS" value="$PROJECT_DIR$/credentials/bigquery-key.json" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="SDK_NAME" value="Python 3.12 (nycohm)" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src/nycohm" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/nycohm/scratch.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <list>
+      <item itemvalue="Python.dagster_pipeline" />
       <item itemvalue="Python.process_datasets" />
+      <item itemvalue="Python.scratch" />
       <item itemvalue="Python.bqt2" />
-      <item itemvalue="Python.bqt" />
-      <item itemvalue="Python.connect_bq" />
       <item itemvalue="Python.helpers" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.process_datasets" />
+        <item itemvalue="Python.dagster_pipeline" />
+        <item itemvalue="Python.scratch" />
         <item itemvalue="Python.bqt2" />
+        <item itemvalue="Python.process_datasets" />
         <item itemvalue="Python.helpers" />
-        <item itemvalue="Python.bqt" />
-        <item itemvalue="Python.connect_bq" />
       </list>
     </recent_temporary>
   </component>
@@ -260,7 +273,8 @@
       <updated>1753978225570</updated>
       <workItem from="1753978226587" duration="751000" />
       <workItem from="1753978989007" duration="31361000" />
-      <workItem from="1754315142223" duration="22384000" />
+      <workItem from="1754315142223" duration="29350000" />
+      <workItem from="1754575425612" duration="6283000" />
     </task>
     <task id="LOCAL-00001" summary="create repo">
       <option name="closed" value="true" />
@@ -366,7 +380,15 @@
       <option name="project" value="LOCAL" />
       <updated>1754356185960</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="development">
+      <option name="closed" value="true" />
+      <created>1754416170160</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1754416170160</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -391,10 +413,12 @@
     <option name="LAST_COMMIT_MESSAGE" value="development" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/nycohm$scratch.coverage" NAME="scratch Coverage Results" MODIFIED="1754420758539" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/nycohm" />
     <SUITE FILE_PATH="coverage/nycohm$join.coverage" NAME="join Coverage Results" MODIFIED="1753996752544" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/nycohm" />
     <SUITE FILE_PATH="coverage/nycohm$bqt.coverage" NAME="bqt Coverage Results" MODIFIED="1754315904956" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/nycohm/helpers" />
-    <SUITE FILE_PATH="coverage/nycohm$bqt2.coverage" NAME="bqt2 Coverage Results" MODIFIED="1754328572344" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/nycohm/helpers" />
+    <SUITE FILE_PATH="coverage/nycohm$dagster_pipeline.coverage" NAME="dagster_pipeline Coverage Results" MODIFIED="1754421385266" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/nycohm" />
     <SUITE FILE_PATH="coverage/nycohm$process_keys.coverage" NAME="process_datasets Coverage Results" MODIFIED="1754343903908" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/nycohm/helpers" />
+    <SUITE FILE_PATH="coverage/nycohm$bqt2.coverage" NAME="bqt2 Coverage Results" MODIFIED="1754420385408" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/nycohm/helpers" />
     <SUITE FILE_PATH="coverage/nycohm$helpers.coverage" NAME="helpers Coverage Results" MODIFIED="1754318263539" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/nycohm" />
     <SUITE FILE_PATH="coverage/nycohm$standardize_keys.coverage" NAME="standardize_keys Coverage Results" MODIFIED="1754079078561" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/nycohm" />
     <SUITE FILE_PATH="coverage/nycohm$connect_bq.coverage" NAME="connect_bq Coverage Results" MODIFIED="1754315424319" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/nycohm/helpers" />
