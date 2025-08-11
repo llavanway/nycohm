@@ -37,7 +37,7 @@ def join_sets_op(context):
     description="Check metrics of the joined dataset",
     required_resource_keys={"bq_client"},
 )
-def check_metrics_op(context):
+def check_metrics_op(context, joined_data):
     check_metrics(context.resources.bq_client)
 
 
@@ -46,7 +46,7 @@ def nyc_housing_job():
     process_housing_op()
     process_affordable_op()
     joined_data = join_sets_op()
-    check_metrics_op()
+    check_metrics_op(joined_data)
 
 
 # Dagster entry point
