@@ -3,3 +3,7 @@ load_from:
       module_name: nycohm.dagster_pipeline
       attribute: defs
       working_directory: src
+  - python_module:
+      module_name: nycohm.definitions
+      attribute: defs
+      working_directory: src
