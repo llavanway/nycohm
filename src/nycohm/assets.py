@@ -3,9 +3,10 @@ import re
 import glob
 import pandas as pd
 from pathlib import Path
-from dagster import multi_asset, AssetOut, Output, MetadataValue, AssetExecutionContext
+from dagster import multi_asset, AssetOut, Output, MetadataValue, AssetExecutionContext, build_op_context, resource
 import logging
 from helpers.log_config import configure_logging
+import duckdb
 
 configure_logging()
 
@@ -13,7 +14,10 @@ configure_logging()
 
 # ── Settings ────────────────────────────────────────────────────────────────────
 # Directory to scan for CSVs, e.g. "/data" (can also be set via env)
-DATA_DIR = os.getenv("DATA_DIR", "../../data/raw_csv")  # change as needed
+
+
+BASE_DIR = Path(__file__).resolve().parents[2]  # root
+DATA_DIR = Path(os.getenv("DATA_DIR", BASE_DIR / "data" / "raw_csv"))
 
 def _canonical_table_name(stem: str) -> str:
     """
@@ -56,6 +60,10 @@ def ingest_and_load_csvs(context: AssetExecutionContext):
 
     Output names == table names (sanitized file stems).
     """
+    context.log.info(f"Starting ingest_and_load_csvs...")
+    logging.info(f"Starting ingest_and_load_csvs...")
+
+
     if not _csv_paths:
         context.log.warning(f"No CSV files found in: {DATA_DIR}")
 
@@ -149,21 +157,20 @@ def ingest_and_load_csvs(context: AssetExecutionContext):
 # keep this list updated
 all_assets = [ingest_and_load_csvs]
 
-# print(os.getcwd())
+# @resource
+# def my_local_duckdb_resource(init_context):
+#     # Creates or connects to a local DuckDB file
+#     conn = duckdb.connect(database="local.duckdb", read_only=False)
+#     return conn
 #
-# print('path:',Path(DATA_DIR))
+# context = build_op_context(resources={"db": my_local_duckdb_resource})
 #
-# for i in _csv_paths:
-#     print(i)
+# ingest_and_load_csvs(context)
 #
-# if not _csv_paths:
-#     print(f"No CSV files found in: {DATA_DIR}")
+# conn = duckdb.connect(database="local.duckdb", read_only=False)
 #
-# def print_directory_tree(start_path='.', indent=''):
-#     for item in os.listdir(start_path):
-#         item_path = os.path.join(start_path, item)
-#         print(f"{indent}|-- {item}")
-#         if os.path.isdir(item_path):
-#             print_directory_tree(item_path, indent + '    ')
+# logging.info(conn.execute("""
+# SELECT * FROM information_schema.tables""").df().T)
 #
-# print(print_directory_tree(start_path='../../data/raw_csv'))
+# BASE_DIR = Path(__file__).resolve().parents[2]
+# logging.info(f'attempting to find data storage directory: {Path(os.getenv("DATA_DIR", BASE_DIR / "data" / "raw_csv"))} ')
