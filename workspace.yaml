@@ -2,3 +2,5 @@ load_from:
   - python_file:
       relative_path: src/nycohm/definitions.py
       attribute: defs
+  - python_file:
+      relative_path: src/nycohm/dagster_pipeline.py

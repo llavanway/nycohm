@@ -3,9 +3,9 @@ import re
 import glob
 import pandas as pd
 from pathlib import Path
-from dagster import multi_asset, AssetOut, Output, MetadataValue, AssetExecutionContext, build_op_context, resource
+from dagster import multi_asset, AssetOut, job, Output, MetadataValue, AssetExecutionContext, build_op_context, resource
 import logging
-from helpers.log_config import configure_logging
+from .helpers.log_config import configure_logging
 import duckdb
 
 configure_logging()
@@ -62,7 +62,6 @@ def ingest_and_load_csvs(context: AssetExecutionContext):
     """
     context.log.info(f"Starting ingest_and_load_csvs...")
     logging.info(f"Starting ingest_and_load_csvs...")
-
 
     if not _csv_paths:
         context.log.warning(f"No CSV files found in: {DATA_DIR}")
@@ -163,9 +162,9 @@ all_assets = [ingest_and_load_csvs]
 #     conn = duckdb.connect(database="local.duckdb", read_only=False)
 #     return conn
 #
-# context = build_op_context(resources={"db": my_local_duckdb_resource})
+# dev_context = build_op_context(resources={"db": my_local_duckdb_resource})
 #
-# ingest_and_load_csvs(context)
+# ingest_and_load_csvs(dev_context)
 #
 # conn = duckdb.connect(database="local.duckdb", read_only=False)
 #
