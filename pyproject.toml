@@ -24,5 +24,5 @@ package-dir = {"" = "src"}
 where = ["src"]
 
 [tool.dagster]
-module_name = "nycohm.definitions"
+python_file = "src/nycohm/definitions.py"
 attribute = "defs"
