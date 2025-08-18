@@ -9,8 +9,10 @@ description = "NYC Open Housing Metrics package"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
-    "dagster",
-    "dagster-webserver",
+    "dagster==1.11.5",
+    "dagster-webserver==1.11.5",
+    "dagster-graphql==1.11.5",
+    "dagster-shared==1.11.5",
     "pandas",
     "google-cloud-bigquery",
 ]
