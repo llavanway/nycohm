@@ -4,18 +4,16 @@ import glob
 import pandas as pd
 from pathlib import Path
 from dagster import multi_asset, AssetOut, Output, MetadataValue, AssetExecutionContext
-from .helpers.process_datasets import (
-    process_housing,
-    process_affordable,
-    join_sets,
-    check_metrics,
-)
+import logging
+from helpers.log_config import configure_logging
+
+configure_logging()
 
 # dev assets
 
 # ── Settings ────────────────────────────────────────────────────────────────────
 # Directory to scan for CSVs, e.g. "/data" (can also be set via env)
-DATA_DIR = os.getenv("DATA_DIR", "./data")  # change as needed
+DATA_DIR = os.getenv("DATA_DIR", "../../data/raw_csv")  # change as needed
 
 def _canonical_table_name(stem: str) -> str:
     """
@@ -31,6 +29,7 @@ def _canonical_table_name(stem: str) -> str:
 
 # Discover CSVs once at import time (static outs for multi_asset)
 _csv_paths = sorted(glob.glob(str(Path(DATA_DIR) / "*.csv")))
+logging.info(f"Found {len(_csv_paths)} CSV files")
 _outs = {
     _canonical_table_name(Path(p).stem): AssetOut(
         io_manager_key="warehouse_io_manager",
@@ -39,6 +38,7 @@ _outs = {
     )
     for p in _csv_paths
 }
+logging.info(f"_outs: {_outs}")
 
 @multi_asset(
     name="ingest_and_load_csvs",
@@ -148,3 +148,22 @@ def ingest_and_load_csvs(context: AssetExecutionContext):
 
 # keep this list updated
 all_assets = [ingest_and_load_csvs]
+
+# print(os.getcwd())
+#
+# print('path:',Path(DATA_DIR))
+#
+# for i in _csv_paths:
+#     print(i)
+#
+# if not _csv_paths:
+#     print(f"No CSV files found in: {DATA_DIR}")
+#
+# def print_directory_tree(start_path='.', indent=''):
+#     for item in os.listdir(start_path):
+#         item_path = os.path.join(start_path, item)
+#         print(f"{indent}|-- {item}")
+#         if os.path.isdir(item_path):
+#             print_directory_tree(item_path, indent + '    ')
+#
+# print(print_directory_tree(start_path='../../data/raw_csv'))
