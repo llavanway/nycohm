@@ -1,5 +1,4 @@
 load_from:
-  - python_module:
-      module_name: nycohm.definitions
+  - python_file:
+      relative_path: src/nycohm/definitions.py
       attribute: defs
-      working_directory: src
