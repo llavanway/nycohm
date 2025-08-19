@@ -14,7 +14,7 @@ dagster dev
 
 import os
 from dagster import Definitions
-from .assets import all_assets
+from src.nycohm.assets.ingest import all_assets
 from .resources import DuckDBResource, BigQueryResource
 
 BACKEND = os.getenv("BACKEND", "duckdb").lower()

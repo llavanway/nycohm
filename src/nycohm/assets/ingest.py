@@ -3,13 +3,13 @@ from pathlib import Path
 import pandas as pd
 from dagster import asset, Output, MetadataValue, AssetExecutionContext
 import logging
-from .helpers.log_config import configure_logging
-from .helpers.prep_for_bq import sanitize_bq_columns
+from src.nycohm.helpers.log_config import configure_logging
+from src.nycohm.helpers.prep_for_bq import sanitize_bq_columns
 
 configure_logging()
 
 # ── Settings ────────────────────────────────────────────────────────────────────
-BASE_DIR = Path(__file__).resolve().parents[2]  # root
+BASE_DIR = Path(__file__).resolve().parents[3]  # root
 DATA_DIR = Path(os.getenv("DATA_DIR", BASE_DIR / "data" / "raw_csv"))
 # Map asset names to real CSV file names
 CSV_FILE_MAP = {
