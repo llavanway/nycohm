@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 import pandas as pd
+from datetime import datetime, timezone
 from dagster import asset, Output, MetadataValue, AssetExecutionContext
 import logging
 from src.nycohm.helpers.log_config import configure_logging
@@ -44,6 +45,9 @@ def affordable_housing_production_by_building_20250731(context: AssetExecutionCo
     df, col_map = sanitize_bq_columns(df, lowercase=False)
     context.log.info(f"Renamed columns for BigQuery: {col_map}")
 
+    now_utc = datetime.now(timezone.utc)
+    df["_ingested_at"] = now_utc.isoformat()
+
     metadata = {
         "csv_path": MetadataValue.path(str(csv_path)),
         "rows": len(df),
@@ -69,6 +73,9 @@ def enrollment_capacity_and_utilization_reports_20250731(context: AssetExecution
 
     df, col_map = sanitize_bq_columns(df, lowercase=False)
     context.log.info(f"Renamed columns for BigQuery: {col_map}")
+
+    now_utc = datetime.now(timezone.utc)
+    df["_ingested_at"] = now_utc.isoformat()
 
     metadata = {
         "csv_path": MetadataValue.path(str(csv_path)),
@@ -100,6 +107,9 @@ def housingdb_post2010(context: AssetExecutionContext) -> Output[pd.DataFrame]:
     df, col_map = sanitize_bq_columns(df, lowercase=False)
     context.log.info(f"Renamed columns for BigQuery: {col_map}")
 
+    now_utc = datetime.now(timezone.utc)
+    df["_ingested_at"] = now_utc.isoformat()
+
     metadata = {
         "csv_path": MetadataValue.path(str(csv_path)),
         "rows": len(df),
@@ -123,6 +133,9 @@ def new_york_36_transit_census_tract_2022(context: AssetExecutionContext) -> Out
 
     df, col_map = sanitize_bq_columns(df, lowercase=False)
     context.log.info(f"Renamed columns for BigQuery: {col_map}")
+
+    now_utc = datetime.now(timezone.utc)
+    df["_ingested_at"] = now_utc.isoformat()
 
     metadata = {
         "csv_path": MetadataValue.path(str(csv_path)),
