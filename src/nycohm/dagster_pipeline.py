@@ -3,14 +3,14 @@ from .helpers.process_datasets import join_sets, check_metrics
 from .helpers.connect_bq import bq_client
 
 from dagster import job, repository
-from src.nycohm.assets import ingest_and_load_csvs
+# from src.nycohm.assets import ingest_and_load_csvs
 
 @job
 def ingest_csvs_job():
     """
     Job to execute the `ingest_and_load_csvs` multi-asset.
     """
-    ingest_and_load_csvs()
+    # ingest_and_load_csvs()
 
 @repository
 def nycohm_repo():

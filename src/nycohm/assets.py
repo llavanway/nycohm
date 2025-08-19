@@ -1,95 +1,138 @@
 import os
-import re
-import glob
-import pandas as pd
 from pathlib import Path
-from dagster import multi_asset, AssetOut, job, Output, MetadataValue, AssetExecutionContext, build_op_context, resource
+import pandas as pd
+from dagster import asset, Output, MetadataValue, AssetExecutionContext
 import logging
 from .helpers.log_config import configure_logging
-import duckdb
+from .helpers.prep_for_bq import sanitize_bq_columns
 
 configure_logging()
 
-# dev assets
-
 # ── Settings ────────────────────────────────────────────────────────────────────
-# Directory to scan for CSVs, e.g. "/data" (can also be set via env)
-
-
 BASE_DIR = Path(__file__).resolve().parents[2]  # root
 DATA_DIR = Path(os.getenv("DATA_DIR", BASE_DIR / "data" / "raw_csv"))
-
-def _canonical_table_name(stem: str) -> str:
-    """
-    Convert a filename stem into a safe table name:
-    - lowercase
-    - replace non-alphanumerics with underscores
-    - collapse doubles and trim underscores
-    """
-    s = re.sub(r"[^a-zA-Z0-9]+", "_", stem.lower())
-    s = re.sub(r"_+", "_", s).strip("_")
-    # BigQuery/DuckDB-friendly fallback if empty
-    return s or "table"
-
-# Discover CSVs once at import time (static outs for multi_asset)
-_csv_paths = sorted(glob.glob(str(Path(DATA_DIR) / "*.csv")))
-logging.info(f"Found {len(_csv_paths)} CSV files")
-_outs = {
-    _canonical_table_name(Path(p).stem): AssetOut(
-        io_manager_key="warehouse_io_manager",
-        # static metadata is optional; we also attach per-materialization metadata when yielding
-        metadata={"discovered_from": p}
-    )
-    for p in _csv_paths
+# Map asset names to real CSV file names
+CSV_FILE_MAP = {
+    "affordable_housing_production_by_building_20250731": "affordable_housing_production_by_building_20250731.csv",
+    "enrollment_capacity_and_utilization_reports_20250731": "enrollment_capacity_and_utilization_reports_20250731.csv",
+    "housingdb_post2010": "housingdb_post2010.csv",
+    "new_york_36_transit_census_tract_2022": "New York_36_transit_census_tract_2022.csv",  # <-- space in filename
 }
-logging.info(f"_outs: {_outs}")
 
-@multi_asset(
-    name="ingest_and_load_csvs",
-    outs=_outs,
-    can_subset=True,  # lets Dagster materialize any subset of these tables
+def _read_csv(context: AssetExecutionContext, asset_name: str) -> tuple[pd.DataFrame, Path]:
+    filename = CSV_FILE_MAP[asset_name]
+    csv_path = Path(DATA_DIR) / filename
+    if not csv_path.exists():
+        msg = f"CSV not found: {csv_path}"
+        context.log.error(msg)
+        raise FileNotFoundError(msg)
+    context.log.info(f"Reading CSV: {csv_path}")
+    logging.info(f"Reading CSV: {csv_path}")
+    return pd.read_csv(csv_path), csv_path
+
+# ── Asset 1: Affordable housing (by building) ──────────────────────────────────
+@asset(
+    name="affordable_housing_production_by_building_20250731",
+    io_manager_key="warehouse_io_manager",
     compute_kind="pandas",
-    group_name="csv_ingest"
+    group_name="csv_ingest",
 )
-def ingest_and_load_csvs(context: AssetExecutionContext):
-    """
-    Ingest all CSVs in DATA_DIR and yield one Output per file.
-    The IO manager will persist each DataFrame to the warehouse.
-      - DuckDB: <schema>.<table>
-      - BigQuery: <project>.<dataset>.<table>
+def affordable_housing_production_by_building_20250731(context: AssetExecutionContext) -> Output[pd.DataFrame]:
+    stem = "affordable_housing_production_by_building_20250731"
+    df, csv_path = _read_csv(context, stem)
 
-    Output names == table names (sanitized file stems).
-    """
-    context.log.info(f"Starting ingest_and_load_csvs...")
-    logging.info(f"Starting ingest_and_load_csvs...")
+    df, col_map = sanitize_bq_columns(df, lowercase=False)
+    context.log.info(f"Renamed columns for BigQuery: {col_map}")
 
-    if not _csv_paths:
-        context.log.warning(f"No CSV files found in: {DATA_DIR}")
+    metadata = {
+        "csv_path": MetadataValue.path(str(csv_path)),
+        "rows": len(df),
+        "columns": list(df.columns),
+        "project_id_nulls": int(df["Project ID"].isna().sum()) if "Project ID" in df.columns else None,
+        "preview": MetadataValue.md(df.head(10).to_markdown(index=False)),
+        "table": stem,
+        "source_owner": "NYC Open Data",
+        "notes": "Building-level affordable housing production snapshot as of 2025-07-31.",
+    }
+    return Output(df, metadata=metadata)
 
-    for csv_path in _csv_paths:
-        stem = Path(csv_path).stem
-        out_name = _canonical_table_name(stem)
+# ── Asset 2: Enrollment capacity & utilization ─────────────────────────────────
+@asset(
+    name="enrollment_capacity_and_utilization_reports_20250731",
+    io_manager_key="warehouse_io_manager",
+    compute_kind="pandas",
+    group_name="csv_ingest",
+)
+def enrollment_capacity_and_utilization_reports_20250731(context: AssetExecutionContext) -> Output[pd.DataFrame]:
+    stem = "enrollment_capacity_and_utilization_reports_20250731"
+    df, csv_path = _read_csv(context, stem)
 
-        # If this asset run selected a subset, skip non-selected outs
-        if context.selected_output_names and out_name not in context.selected_output_names:
-            continue
+    df, col_map = sanitize_bq_columns(df, lowercase=False)
+    context.log.info(f"Renamed columns for BigQuery: {col_map}")
 
-        context.log.info(f"Reading CSV: {csv_path} -> output '{out_name}'")
-        df = pd.read_csv(csv_path)
+    metadata = {
+        "csv_path": MetadataValue.path(str(csv_path)),
+        "rows": len(df),
+        "preview": MetadataValue.md(df.head(10).to_markdown(index=False)),
+        "table": stem,
+        "source_owner": "NYC Open Data",
+        "notes": "Enrollment, capacity, and utilization metrics as of 2025-07-31.",
+    }
+    return Output(df, metadata=metadata)
 
-        # Attach rich metadata for lineage/observability & to guide the IO manager
-        yield Output(
-            df,
-            output_name=out_name,
-            metadata={
-                "csv_path": MetadataValue.path(csv_path),
-                "rows": len(df),
-                "preview": MetadataValue.md(df.head(10).to_markdown(index=False)),
-                # Many IO managers read the destination table from metadata; if yours does,
-                # this makes the mapping explicit. Otherwise, they can fall back to output_name.
-                "table": out_name,
-            },
-        )
+# ── Asset 3: Housing DB (post-2010) ───────────────────────────────────────────
+@asset(
+    name="housingdb_post2010",
+    io_manager_key="warehouse_io_manager",
+    compute_kind="pandas",
+    group_name="csv_ingest",
+)
+def housingdb_post2010(context: AssetExecutionContext) -> Output[pd.DataFrame]:
+    stem = "housingdb_post2010"
+    df, csv_path = _read_csv(context, stem)
+
+    df["Job_Number"] = (
+        df["Job_Number"]
+        .astype("string")  # pandas nullable string dtype
+        .str.strip()  # cleanup for edge cases
+    )
+
+    df, col_map = sanitize_bq_columns(df, lowercase=False)
+    context.log.info(f"Renamed columns for BigQuery: {col_map}")
+
+    metadata = {
+        "csv_path": MetadataValue.path(str(csv_path)),
+        "rows": len(df),
+        "preview": MetadataValue.md(df.head(10).to_markdown(index=False)),
+        "table": stem,
+        "source_owner": "NYC DCP",
+        "notes": "Post-2010 housing permits/records.",
+    }
+    return Output(df, metadata=metadata)
+
+# ── Asset 4: Transit census tract (NY-36, 2022) ───────────────────────────────
+@asset(
+    name="new_york_36_transit_census_tract_2022",
+    io_manager_key="warehouse_io_manager",
+    compute_kind="pandas",
+    group_name="csv_ingest",
+)
+def new_york_36_transit_census_tract_2022(context: AssetExecutionContext) -> Output[pd.DataFrame]:
+    stem = "new_york_36_transit_census_tract_2022"
+    df, csv_path = _read_csv(context, stem)
+
+    df, col_map = sanitize_bq_columns(df, lowercase=False)
+    context.log.info(f"Renamed columns for BigQuery: {col_map}")
+
+    metadata = {
+        "csv_path": MetadataValue.path(str(csv_path)),
+        "rows": len(df),
+        "preview": MetadataValue.md(df.head(10).to_markdown(index=False)),
+        "table": stem,
+        "source_owner": "Univ. of Minnesota",
+        "notes": "NY-36 tract-level transit thresholds for 2022.",
+    }
+    return Output(df, metadata=metadata)
 
 
 #
@@ -154,7 +197,10 @@ def ingest_and_load_csvs(context: AssetExecutionContext):
 #     check_metrics(context.resources.bq_client)
 
 # keep this list updated
-all_assets = [ingest_and_load_csvs]
+all_assets = [affordable_housing_production_by_building_20250731,
+              enrollment_capacity_and_utilization_reports_20250731,
+              housingdb_post2010,
+              new_york_36_transit_census_tract_2022]
 
 # @resource
 # def my_local_duckdb_resource(init_context):

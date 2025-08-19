@@ -36,7 +36,7 @@ if BACKEND == "bigquery":
     from dagster_gcp_pandas import BigQueryPandasIOManager
     warehouse_io_manager = BigQueryPandasIOManager(
         project=os.getenv("BQ_PROJECT", "nycohm"),
-        dataset=os.getenv("BQ_DATASET", "analytics"),
+        dataset=os.getenv("BQ_DATASET", "dagster"),
         # write_disposition="WRITE_TRUNCATE",  # or WRITE_APPEND
     )
 else:
