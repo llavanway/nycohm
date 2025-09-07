@@ -5,10 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2bb4dc5a-4280-44a5-a8e3-4a5fc07717b4" name="Changes" comment="dev">
-      <change afterPath="$PROJECT_DIR$/src/nycohm/assets/process.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/nycohm/assets/ingest.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/nycohm/assets/ingest.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/nycohm/definitions.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/nycohm/definitions.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/nycohm/assets/process.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/nycohm/assets/process.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -278,7 +276,7 @@
       <workItem from="1753978989007" duration="31361000" />
       <workItem from="1754315142223" duration="29350000" />
       <workItem from="1754575425612" duration="53805000" />
-      <workItem from="1756994192779" duration="11444000" />
+      <workItem from="1756994192779" duration="12462000" />
     </task>
     <task id="LOCAL-00001" summary="create repo">
       <option name="closed" value="true" />
@@ -488,7 +486,15 @@
       <option name="project" value="LOCAL" />
       <updated>1755633897462</updated>
     </task>
-    <option name="localTasksCounter" value="27" />
+    <task id="LOCAL-00027" summary="dev">
+      <option name="closed" value="true" />
+      <created>1757269182850</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1757269182850</updated>
+    </task>
+    <option name="localTasksCounter" value="28" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

@@ -106,4 +106,4 @@ def project(housingdb_post2010_clean,affordable_housing_production_by_building_c
 
 
 # keep this list updated
-assets_process = [housingdb_post2010_clean,affordable_housing_production_by_building_clean]
+assets_process = [housingdb_post2010_clean,affordable_housing_production_by_building_clean, project]
