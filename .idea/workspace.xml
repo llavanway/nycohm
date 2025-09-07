@@ -5,7 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2bb4dc5a-4280-44a5-a8e3-4a5fc07717b4" name="Changes" comment="dev">
+      <change afterPath="$PROJECT_DIR$/src/nycohm/assets/process.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/nycohm/assets/ingest.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/nycohm/assets/ingest.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/nycohm/definitions.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/nycohm/definitions.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -46,39 +49,39 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Python.assets.executor": "Run",
-    "Python.bqt.executor": "Run",
-    "Python.bqt2.executor": "Run",
-    "Python.connect_bq.executor": "Debug",
-    "Python.crosswalk.executor": "Run",
-    "Python.dagster_pipeline.executor": "Run",
-    "Python.definitions.executor": "Run",
-    "Python.helpers.executor": "Run",
-    "Python.join.executor": "Run",
-    "Python.process_datasets.executor": "Run",
-    "Python.process_keys.executor": "Run",
-    "Python.scratch.executor": "Run",
-    "Python.standardize_keys.executor": "Run",
-    "Python.test.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "main",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "preferences.pluginManager",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Python.assets.executor&quot;: &quot;Run&quot;,
+    &quot;Python.bqt.executor&quot;: &quot;Run&quot;,
+    &quot;Python.bqt2.executor&quot;: &quot;Run&quot;,
+    &quot;Python.connect_bq.executor&quot;: &quot;Debug&quot;,
+    &quot;Python.crosswalk.executor&quot;: &quot;Run&quot;,
+    &quot;Python.dagster_pipeline.executor&quot;: &quot;Run&quot;,
+    &quot;Python.definitions.executor&quot;: &quot;Run&quot;,
+    &quot;Python.helpers.executor&quot;: &quot;Run&quot;,
+    &quot;Python.join.executor&quot;: &quot;Run&quot;,
+    &quot;Python.process_datasets.executor&quot;: &quot;Run&quot;,
+    &quot;Python.process_keys.executor&quot;: &quot;Run&quot;,
+    &quot;Python.scratch.executor&quot;: &quot;Run&quot;,
+    &quot;Python.standardize_keys.executor&quot;: &quot;Run&quot;,
+    &quot;Python.test.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
-  "keyToStringList": {
-    "DatabaseDriversLRU": [
-      "bigquery"
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;bigquery&quot;
     ]
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/src/nycohm/assets" />
@@ -274,7 +277,8 @@
       <workItem from="1753978226587" duration="751000" />
       <workItem from="1753978989007" duration="31361000" />
       <workItem from="1754315142223" duration="29350000" />
-      <workItem from="1754575425612" duration="48551000" />
+      <workItem from="1754575425612" duration="53805000" />
+      <workItem from="1756994192779" duration="11444000" />
     </task>
     <task id="LOCAL-00001" summary="create repo">
       <option name="closed" value="true" />
@@ -476,7 +480,15 @@
       <option name="project" value="LOCAL" />
       <updated>1755632978266</updated>
     </task>
-    <option name="localTasksCounter" value="26" />
+    <task id="LOCAL-00026" summary="dev">
+      <option name="closed" value="true" />
+      <created>1755633897462</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1755633897462</updated>
+    </task>
+    <option name="localTasksCounter" value="27" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -507,7 +519,7 @@
     <SUITE FILE_PATH="coverage/nycohm$process_keys.coverage" NAME="process_datasets Coverage Results" MODIFIED="1754343903908" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/nycohm/helpers" />
     <SUITE FILE_PATH="coverage/nycohm$bqt2.coverage" NAME="bqt2 Coverage Results" MODIFIED="1754420385408" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/nycohm/helpers" />
     <SUITE FILE_PATH="coverage/nycohm$crosswalk.coverage" NAME="crosswalk Coverage Results" MODIFIED="1753994326321" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/nycohm" />
-    <SUITE FILE_PATH="coverage/nycohm$scratch.coverage" NAME="scratch Coverage Results" MODIFIED="1755621076794" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/nycohm" />
+    <SUITE FILE_PATH="coverage/nycohm$scratch.coverage" NAME="scratch Coverage Results" MODIFIED="1755634482178" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/nycohm" />
     <SUITE FILE_PATH="coverage/nycohm$join.coverage" NAME="join Coverage Results" MODIFIED="1753996752544" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/nycohm" />
     <SUITE FILE_PATH="coverage/nycohm$bqt.coverage" NAME="bqt Coverage Results" MODIFIED="1754315904956" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/nycohm/helpers" />
     <SUITE FILE_PATH="coverage/nycohm$dagster_pipeline.coverage" NAME="dagster_pipeline Coverage Results" MODIFIED="1755542857675" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/nycohm" />
