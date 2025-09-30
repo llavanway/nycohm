@@ -13,6 +13,7 @@ dagster dev
 """
 
 import os
+from pathlib import Path
 from dagster import Definitions
 from src.nycohm.assets.ingest import assets_ingest
 from src.nycohm.assets.process import assets_process
@@ -28,8 +29,12 @@ if BACKEND == "bigquery":
         dataset=os.getenv("BQ_DATASET", "analytics"),
     )
 else:
+    duckdb_path = Path(os.getenv("DUCKDB_PATH", "dev.duckdb"))
+    if duckdb_path.exists():
+        duckdb_path.unlink()
+
     db_resource = DuckDBResource(
-        database=os.getenv("DUCKDB_PATH", "dev.duckdb")
+        database=str(duckdb_path)
     )
 
 # ---- Writing side (IO manager used by Dagster to persist outputs) ----
@@ -45,7 +50,7 @@ else:
     # pip install dagster-duckdb dagster-duckdb-pandas duckdb
     from dagster_duckdb_pandas import DuckDBPandasIOManager
     warehouse_io_manager = DuckDBPandasIOManager(
-        database=os.getenv("DUCKDB_PATH", "dev.duckdb"),
+        database=str(duckdb_path),
         schema=os.getenv("DUCKDB_SCHEMA", "main"),
         # create_schema_if_missing=True,
     )
