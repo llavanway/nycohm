@@ -54,6 +54,10 @@ def affordable_housing_production_by_building_clean(affordable_housing_productio
     # correct key formats
     df['BBL'] = df['BBL'].astype('Int64')
 
+    # convert date columns to proper format
+    df['Project_Start_Date'] = pd.to_datetime(df['Project_Start_Date'])
+    df['Project_Completion_Date'] = pd.to_datetime(df['Project_Completion_Date'])
+
     # Aggregate rows missing BBL into rows not missing BBL by matching Project ID
     logging.info('Sum of units prior to aggregation: {}'.format(df['All_Counted_Units'].sum()))
     missing_bbl_rows = df[df['BBL'].isna()]
@@ -94,6 +98,10 @@ def project(housingdb_post2010_clean,affordable_housing_production_by_building_c
     df = housingdb_post2010_clean.merge(
         affordable_housing_production_by_building_clean, on=['BBL'], how='left'
     )
+
+    # convert date columns to proper format
+    df['Project_Start_Date'] = pd.to_datetime(df['Project_Start_Date'])
+    df['Project_Completion_Date'] = pd.to_datetime(df['Project_Completion_Date'])
 
     logging.info(df.head(20).to_string())
 

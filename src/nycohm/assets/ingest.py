@@ -31,14 +31,14 @@ def _read_csv(context: AssetExecutionContext, asset_name: str) -> tuple[pd.DataF
     logging.info(f"Reading CSV: {csv_path}")
     return pd.read_csv(csv_path), csv_path
 
-# ── Asset 1: Affordable housing (by building) ──────────────────────────────────
+# ── Asset 1: Affordable housing ──────────────────────────────────
 @asset(
     name="affordable_housing_production_by_building",
     io_manager_key="warehouse_io_manager",
     compute_kind="pandas",
     group_name="csv_ingest",
 )
-def affordable_housing_production_by_building(context: AssetExecutionContext) -> Output[pd.DataFrame]:
+def affordable_housing_production_by_project(context: AssetExecutionContext) -> Output[pd.DataFrame]:
     stem = "affordable_housing_production_by_building"
     df, csv_path = _read_csv(context, stem)
 
