@@ -5,10 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2bb4dc5a-4280-44a5-a8e3-4a5fc07717b4" name="Changes" comment="dev">
-      <change afterPath="$PROJECT_DIR$/data/raw_csv/Affordable_Housing_Production_by_Project_20250909.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/nycohm/helpers/load_geojson_to_bq.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/nycohm/assets/ingest.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/nycohm/assets/ingest.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/nycohm/assets/process.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/nycohm/assets/process.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -279,7 +276,7 @@
       <workItem from="1753978989007" duration="31361000" />
       <workItem from="1754315142223" duration="29350000" />
       <workItem from="1754575425612" duration="53805000" />
-      <workItem from="1756994192779" duration="41157000" />
+      <workItem from="1756994192779" duration="43943000" />
     </task>
     <task id="LOCAL-00001" summary="create repo">
       <option name="closed" value="true" />
@@ -505,7 +502,15 @@
       <option name="project" value="LOCAL" />
       <updated>1757270278737</updated>
     </task>
-    <option name="localTasksCounter" value="29" />
+    <task id="LOCAL-00029" summary="dev">
+      <option name="closed" value="true" />
+      <created>1759249367623</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1759249367623</updated>
+    </task>
+    <option name="localTasksCounter" value="30" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

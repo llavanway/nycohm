@@ -31,6 +31,29 @@ def housingdb_post2010_clean(housingdb_post2010) -> Output[pd.DataFrame]:
     df['CompltYear'] = df['CompltYear'].astype('Int64').astype(str)
     df['PermitYear'] = df['PermitYear'].astype('Int64').astype(str)
 
+    # add dataset identifier
+    df['source_dataset'] = 'Housing Units'
+
+    # add standardized geographic key column names
+    df['Community_District'] = df['CommntyDst']
+    df['Council_District'] = df['CouncilDst']
+    df['Census_Tract'] = df['CenTract20']
+
+    # add shared metric columns
+    df['Housing_Units'] = df['ClassANet']
+
+    # add shared filter columns
+    df['Delivery_Status'] = df['Job_Status'].apply(
+        lambda status: 'Delivered' if status == '5. Completed Construction' else 'In Progress'
+    )
+
+    df['Unit_Type'] = df['Job_Type'].apply(
+        lambda status: 'New Units' if status == 'New Building' else 'Preserved Units'
+    )
+
+    df['Project_Start_Year'] = df['DateFiled']
+    df['Project_Completion_Year'] = df['CompltYear']
+
     logging.info(df.head(20).to_string())
 
     metadata = {
@@ -76,6 +99,29 @@ def affordable_housing_production_by_building_clean(affordable_housing_productio
 
     logging.info(df.head(20).to_string())
 
+    # add dataset identifier
+    df['source_dataset'] = 'Affordable Housing Units'
+
+    # add standardized geographic key column names
+    df['Community_District'] = df['Community_Board']
+    df['Council_District'] = df['Council_District']
+    df['Census_Tract'] = df['Census_Tract']
+
+    # add shared metric columns
+    df['Housing_Units'] = df['All_Counted_Units']
+
+    # add shared filter columns
+    df['Delivery_Status'] = df['Project_Completion_Date'].apply(
+        lambda status: 'Delivered' if status is None else 'In Progress'
+    )
+
+    df['Unit_Type'] = df['Reporting_Construction_Type'].apply(
+        lambda status: 'New Units' if status == 'New Construction' else 'Preserved Units'
+    )
+
+    df['Project_Start_Year'] = df['Project_Start_Date'].dt.year
+    df['Project_Completion_Year'] = df['Project_Completion_Date'].dt.year
+
     metadata = {
         "rows": len(df),
         "preview": MetadataValue.md(df.head(10).to_markdown(index=False)),
@@ -88,20 +134,30 @@ def affordable_housing_production_by_building_clean(affordable_housing_productio
 @asset(
     ins={"housingdb_post2010_clean": AssetIn(key=["housingdb_post2010_clean"]),
          "affordable_housing_production_by_building_clean": AssetIn(key=["affordable_housing_production_by_building_clean"])},
-    name="project",
+    name="main",
     io_manager_key="warehouse_io_manager",
     compute_kind="pandas",
     group_name="process",
 )
-def project(housingdb_post2010_clean,affordable_housing_production_by_building_clean) -> Output[pd.DataFrame]:
-    # Join on BBL
-    df = housingdb_post2010_clean.merge(
-        affordable_housing_production_by_building_clean, on=['BBL'], how='left'
-    )
+def main(housingdb_post2010_clean,affordable_housing_production_by_building_clean) -> Output[pd.DataFrame]:
+    # get only needed columns from each dataset
+    shared_columns = ['Community_District','Council_District','Census_Tract','source_dataset','Delivery_Status',
+                      'Unit_Type','Project_Completion_Year','Housing_Units','Project_Start_Year',
+                      'Project_Completion_Year']
+    housingdb_post2010_clean = housingdb_post2010_clean[shared_columns]
+    affordable_housing_production_by_building_clean = affordable_housing_production_by_building_clean[shared_columns
+    ]
 
-    # convert date columns to proper format
-    df['Project_Start_Date'] = pd.to_datetime(df['Project_Start_Date'])
-    df['Project_Completion_Date'] = pd.to_datetime(df['Project_Completion_Date'])
+    df = pd.concat([housingdb_post2010_clean, affordable_housing_production_by_building_clean], ignore_index=True)
+    #
+    # # Join on BBL
+    # df = housingdb_post2010_clean.merge(
+    #     affordable_housing_production_by_building_clean, on=['BBL'], how='left'
+    # )
+    #
+    # # convert date columns to proper format
+    # df['Project_Start_Date'] = pd.to_datetime(df['Project_Start_Date'])
+    # df['Project_Completion_Date'] = pd.to_datetime(df['Project_Completion_Date'])
 
     logging.info(df.head(20).to_string())
 
@@ -114,4 +170,4 @@ def project(housingdb_post2010_clean,affordable_housing_production_by_building_c
 
 
 # keep this list updated
-assets_process = [housingdb_post2010_clean,affordable_housing_production_by_building_clean, project]
+assets_process = [housingdb_post2010_clean,affordable_housing_production_by_building_clean, main]
