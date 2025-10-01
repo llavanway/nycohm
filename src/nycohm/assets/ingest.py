@@ -14,7 +14,7 @@ BASE_DIR = Path(__file__).resolve().parents[3]  # root
 DATA_DIR = Path(os.getenv("DATA_DIR", BASE_DIR / "data" / "raw_csv"))
 # Map asset names to real CSV file names
 CSV_FILE_MAP = {
-    "affordable_housing_production_by_building": "affordable_housing_production_by_building_20250731.csv",
+    "affordable_housing_production_by_building": "Affordable_Housing_Production_by_Building_20251001.csv",
     "enrollment_capacity_and_utilization_reports": "enrollment_capacity_and_utilization_reports_20250731.csv",
     "housingdb_post2010": "housingdb_post2010.csv",
     "new_york_36_transit_census_tract_2022": "New York_36_transit_census_tract_2022.csv",  # <-- space in filename
