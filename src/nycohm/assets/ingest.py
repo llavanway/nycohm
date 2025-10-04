@@ -11,21 +11,21 @@ configure_logging()
 
 # ── Settings ────────────────────────────────────────────────────────────────────
 BASE_DIR = Path(__file__).resolve().parents[3]  # root
-DATA_DIR = Path(os.getenv("DATA_DIR", BASE_DIR / "data" / "raw_csv"))
+DATA_DIR = Path(os.getenv("DATA_DIR", BASE_DIR / "data"))
 # Map asset names to real CSV file names
 CSV_FILE_MAP = {
-    "affordable_housing_production_by_building": "Affordable_Housing_Production_by_Building_20251001.csv",
-    "enrollment_capacity_and_utilization_reports": "enrollment_capacity_and_utilization_reports_20250731.csv",
-    "housingdb_post2010": "housingdb_post2010.csv",
-    "new_york_36_transit_census_tract_2022": "New York_36_transit_census_tract_2022.csv",  # <-- space in filename,
-    "population_census_tract": "DECENNIALPL2020.P1-Data.csv",
-    "crosswalk_census_tract_to_cd": "nyc_2020_census_tract_nta_cdta_relationships.csv",
-    "crosswalk_census_tract_to_cc": "nyc_2020_census_tract_ccd_2023_relationships.csv"
+    "affordable_housing_production_by_building": Path("raw_csv") / "Affordable_Housing_Production_by_Building_20251001.csv",
+    "enrollment_capacity_and_utilization_reports": Path("raw_csv") / "enrollment_capacity_and_utilization_reports_20250731.csv",
+    "housingdb_post2010": Path("raw_csv") / "housingdb_post2010.csv",
+    "new_york_36_transit_census_tract_2022": Path("raw_csv") / "New York_36_transit_census_tract_2022.csv",  # <-- space in filename,
+    "population_census_tract": Path("raw_csv") / "DECENNIALPL2020.P1-Data.csv",
+    "crosswalk_census_tract_to_cd": Path("raw_csv") / "nyc_2020_census_tract_nta_cdta_relationships.csv",
+    "crosswalk_census_tract_to_cc": Path("raw_csv") / "nyc_2020_census_tract_ccd_2023_relationships.csv",
 }
 
 def _read_csv(context: AssetExecutionContext, asset_name: str) -> tuple[pd.DataFrame, Path]:
-    filename = CSV_FILE_MAP[asset_name]
-    csv_path = Path(DATA_DIR) / filename
+    relative_path = CSV_FILE_MAP[asset_name]
+    csv_path = Path(DATA_DIR) / relative_path
     if not csv_path.exists():
         msg = f"CSV not found: {csv_path}"
         context.log.error(msg)
