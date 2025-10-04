@@ -18,7 +18,9 @@ CSV_FILE_MAP = {
     "enrollment_capacity_and_utilization_reports": "enrollment_capacity_and_utilization_reports_20250731.csv",
     "housingdb_post2010": "housingdb_post2010.csv",
     "new_york_36_transit_census_tract_2022": "New York_36_transit_census_tract_2022.csv",  # <-- space in filename,
-    "population_census_tract": "DECENNIALPL2020.P1-Data.csv"
+    "population_census_tract": "DECENNIALPL2020.P1-Data.csv",
+    "crosswalk_census_tract_to_cd": "nyc_2020_census_tract_nta_cdta_relationships.csv",
+    "crosswalk_census_tract_to_cc": "nyc_2020_census_tract_ccd_2023_relationships.csv"
 }
 
 def _read_csv(context: AssetExecutionContext, asset_name: str) -> tuple[pd.DataFrame, Path]:
@@ -158,6 +160,34 @@ def new_york_36_transit_census_tract(context: AssetExecutionContext) -> Output[p
 )
 def population_census_tract(context: AssetExecutionContext) -> Output[pd.DataFrame]:
     stem = "population_census_tract"
+    df, csv_path = _read_csv(context, stem)
+
+    df, col_map = sanitize_bq_columns(df, lowercase=False)
+    context.log.info(f"Renamed columns for BigQuery: {col_map}")
+
+    now_utc = datetime.now(timezone.utc)
+    df["_ingested_at"] = now_utc.isoformat()
+
+    metadata = {
+        "csv_path": MetadataValue.path(str(csv_path)),
+        "rows": len(df),
+        "preview": MetadataValue.md(df.head(10).to_markdown(index=False)),
+        "table": 'new_york_36_transit_census_tract',
+        "source_owner": "Univ. of Minnesota",
+        "notes": "NY-36 tract-level transit thresholds for 2022.",
+    }
+    return Output(df, metadata=metadata)
+
+
+# Population by census tract
+@asset(
+    name="crosswalk_census_tract_to_cd",
+    io_manager_key="warehouse_io_manager",
+    compute_kind="pandas",
+    group_name="csv_ingest",
+)
+def crosswalk_census_tract_to_cd(context: AssetExecutionContext) -> Output[pd.DataFrame]:
+    stem = "crosswalk_census_tract_to_cd"
     df, csv_path = _read_csv(context, stem)
 
     df, col_map = sanitize_bq_columns(df, lowercase=False)

@@ -4,33 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2bb4dc5a-4280-44a5-a8e3-4a5fc07717b4" name="Changes" comment="add assets for geo district aggregations">
-      <change afterPath="$PROJECT_DIR$/data/crosswalk/nyc_2010to2020_split_census_tract_pop_proportion.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/crosswalk/nyc_2020_census_block_ct_nta_cdta_relationships.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/crosswalk/nyc_2020_census_tract_ccd_2023_relationships.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/crosswalk/nyc_2020_census_tract_nta_cdta_relationships.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/raw_csv/DECENNIALPL2020.P1-Data.csv" afterDir="false" />
+    <list default="true" id="2bb4dc5a-4280-44a5-a8e3-4a5fc07717b4" name="Changes" comment="add maps and aggregations for geo districts">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/crosswalk/community_to_council.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/crosswalk/community_to_school.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/crosswalk/community_to_tract.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/crosswalk/council_to_school.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/crosswalk/council_to_tract.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/standardized/Affordable_Housing_Production_by_Building_standardized.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/standardized/Enrollment_Capacity_And_Utilization_Reports_standardized.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/standardized/HousingDB_post2010_standardized.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/standardized/New_York_36_transit_census_tract_standardized.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/standardized/aggregated_housing_data.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/standardized/community_to_council_standardized.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/standardized/community_to_school_standardized.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/standardized/community_to_tract_standardized.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/standardized/council_to_school_standardized.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/standardized/council_to_tract_standardized.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/standardized/merged_housing_data.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/web_sources.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/web_sources.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/nycohm/assets/geo_districts.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/nycohm/assets/geo_districts.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/nycohm/assets/ingest.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/nycohm/assets/ingest.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/nycohm/assets/process.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/nycohm/assets/process.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -304,7 +279,7 @@
       <workItem from="1753978989007" duration="31361000" />
       <workItem from="1754315142223" duration="29350000" />
       <workItem from="1754575425612" duration="53805000" />
-      <workItem from="1756994192779" duration="77263000" />
+      <workItem from="1756994192779" duration="78293000" />
     </task>
     <task id="LOCAL-00001" summary="create repo">
       <option name="closed" value="true" />
@@ -562,7 +537,15 @@
       <option name="project" value="LOCAL" />
       <updated>1759595606837</updated>
     </task>
-    <option name="localTasksCounter" value="33" />
+    <task id="LOCAL-00033" summary="add maps and aggregations for geo districts">
+      <option name="closed" value="true" />
+      <created>1759606275240</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1759606275240</updated>
+    </task>
+    <option name="localTasksCounter" value="34" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -589,7 +572,8 @@
     <MESSAGE value="switch from join to union for final dataset" />
     <MESSAGE value="dev" />
     <MESSAGE value="add assets for geo district aggregations" />
-    <option name="LAST_COMMIT_MESSAGE" value="add assets for geo district aggregations" />
+    <MESSAGE value="add maps and aggregations for geo districts" />
+    <option name="LAST_COMMIT_MESSAGE" value="add maps and aggregations for geo districts" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/nycohm$process_keys.coverage" NAME="process_datasets Coverage Results" MODIFIED="1754343903908" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/nycohm/helpers" />
