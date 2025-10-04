@@ -60,8 +60,6 @@ def agg_council_district(housingdb_post2010_clean,affordable_housing_production_
 
     return Output(df, metadata=metadata)
 
-assets_geo_districts = [agg_council_district]
-
 
 # aggregate on community district
 @asset(
@@ -121,13 +119,15 @@ def agg_community_district(housingdb_post2010_clean,affordable_housing_productio
 # aggregate on census tract
 @asset(
     ins={"housingdb_post2010_clean": AssetIn(key=["housingdb_post2010_clean"]),
-         "affordable_housing_production_by_building_clean": AssetIn(key=["affordable_housing_production_by_building_clean"])},
+         "affordable_housing_production_by_building_clean": AssetIn(key=["affordable_housing_production_by_building_clean"]),
+         "new_york_36_transit_census_tract_clean": AssetIn(key=["new_york_36_transit_census_tract_clean"])},
     name="agg_census_tract",
     io_manager_key="warehouse_io_manager",
     compute_kind="pandas",
     group_name="process",
 )
-def agg_census_tract(housingdb_post2010_clean,affordable_housing_production_by_building_clean) -> Output[pd.DataFrame]:
+def agg_census_tract(housingdb_post2010_clean,affordable_housing_production_by_building_clean,
+                     new_york_36_transit_census_tract_clean) -> Output[pd.DataFrame]:
     h = housingdb_post2010_clean
 
     # filter on completed housing units only
@@ -160,6 +160,10 @@ def agg_census_tract(housingdb_post2010_clean,affordable_housing_production_by_b
 
     # Merge the two aggregated DataFrames on Council_District and Project_Completion_Year
     df = ha.merge(aa, on=['Census_Tract', 'Project_Completion_Year'], how='left')
+
+    # Merge transit data
+    t = new_york_36_transit_census_tract_clean
+    df = df.merge(t[['Census_Tract', 'jobs_at_60_mins_transit_time']], on='Census_Tract', how='left')
 
     logging.info('aggregated rows of merged df: {}'.format(len(df)))
 

@@ -6,6 +6,36 @@ from src.nycohm.helpers.handle_null import standardize_null_values
 
 configure_logging()
 
+
+# Process census population dataset
+@asset(
+    ins={"population_census_tract": AssetIn(key=["population_census_tract"])},
+    name="population_census_tract_clean",
+    io_manager_key="warehouse_io_manager",
+    compute_kind="pandas",
+    group_name="process",
+)
+def population_census_tract_clean(population_census_tract) -> Output[pd.DataFrame]:
+    df = population_census_tract
+    df = standardize_null_values(df)
+
+    # correct key formats
+    df['Census_Tract'] = (
+        df['GEO_ID'].astype(str)
+        .str.extract(r'(\d{11})$', expand=False)
+    ).astype(str)
+
+    # keep only needed columns
+    df = df[['Census_Tract', 'P1_001N']]
+
+    metadata = {
+        "rows": len(df),
+        "preview": MetadataValue.md(df.head(10).to_markdown(index=False)),
+    }
+
+    return Output(df, metadata=metadata)
+
+
 # Process transit dataset
 @asset(
     ins={"new_york_36_transit_census_tract": AssetIn(key=["new_york_36_transit_census_tract"])},
@@ -223,5 +253,5 @@ def main(housingdb_post2010_clean,affordable_housing_production_by_building_clea
 
 
 # keep this list updated
-assets_process = [new_york_36_transit_census_tract_clean,housingdb_post2010_clean,
+assets_process = [population_census_tract_clean,new_york_36_transit_census_tract_clean,housingdb_post2010_clean,
                   affordable_housing_production_by_building_clean, main]
