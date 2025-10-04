@@ -19,25 +19,25 @@ def new_york_36_transit_census_tract_clean(new_york_36_transit_census_tract) -> 
     df = standardize_null_values(df)
 
     # correct key formats
-    df['Census_Tract'] = df['Census_Tract'].astype(str)
+    df['Census_Tract'] = df['Census_ID'].astype(str)
 
     # adjust types
-    df['Weighted_average_total_jobs'] = df['Weighted_average_total_jobs'].astype('Int64')
+    df['Weighted_average_total_jobs'] = df['Weighted_average_total_jobs'].round(0).astype('Int64')
 
     # pivot
     thresholds = [15, 45, 60]
     # filter for departure time
-    df = df['Departure_Time'] == '7:00-8:59'
+    df = df[df["Departure"] == "7:00-8:59"]
     # ensure Threshold is numeric
-    df = df[["Census_ID", "Threshold", "Weighted_average_total_jobs"]].copy()
-    df["Threshold"] = pd.to_numeric(tmp["Threshold"], errors="coerce")
+    df = df[["Census_Tract", "Threshold", "Weighted_average_total_jobs"]].copy()
+    df["Threshold"] = pd.to_numeric(df["Threshold"], errors="coerce")
 
     # filter to the requested thresholds
     df = df[df["Threshold"].isin(thresholds)]
 
     # pivot thresholds into columns
     df = (df
-            .pivot(index="Census_ID",
+            .pivot(index="Census_Tract",
                    columns="Threshold",
                    values="Weighted_average_total_jobs")
             .reindex(columns=sorted(thresholds))  # ensure only requested thresholds, in order
@@ -207,7 +207,8 @@ def main(housingdb_post2010_clean,affordable_housing_production_by_building_clea
     logging.info('rows prior to transit merge: {}'.format(len(df)))
 
     # join transit
-    df = df.merge(new_york_36_transit_census_tract_clean,left_on='Census_ID',how='left')
+    df = df.merge(new_york_36_transit_census_tract_clean,left_on='Census_Tract',
+                  right_on='Census_Tract',how='left')
 
     logging.info('rows after transit merge: {}'.format(len(df)))
 

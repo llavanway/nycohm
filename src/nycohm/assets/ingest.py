@@ -122,7 +122,7 @@ def housingdb_post2010(context: AssetExecutionContext) -> Output[pd.DataFrame]:
 
 # ── Asset 4: Transit census tract (NY-36, 2022) ───────────────────────────────
 @asset(
-    name="new_york_36_transit_census_tract_2022",
+    name="new_york_36_transit_census_tract",
     io_manager_key="warehouse_io_manager",
     compute_kind="pandas",
     group_name="csv_ingest",
