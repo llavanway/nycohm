@@ -19,8 +19,8 @@ CSV_FILE_MAP = {
     "housingdb_post2010": Path("raw_csv") / "housingdb_post2010.csv",
     "new_york_36_transit_census_tract_2022": Path("raw_csv") / "New York_36_transit_census_tract_2022.csv",  # <-- space in filename,
     "population_census_tract": Path("raw_csv") / "DECENNIALPL2020.P1-Data.csv",
-    "crosswalk_census_tract_to_cd": Path("raw_csv") / "nyc_2020_census_tract_nta_cdta_relationships.csv",
-    "crosswalk_census_tract_to_cc": Path("raw_csv") / "nyc_2020_census_tract_ccd_2023_relationships.csv",
+    "crosswalk_census_tract_to_cd": Path("crosswalk") / "nyc_2020_census_tract_nta_cdta_relationships.csv",
+    "crosswalk_census_tract_to_cc": Path("crosswalk") / "nyc_2020_census_tract_ccd_2023_relationships.csv",
 }
 
 def _read_csv(context: AssetExecutionContext, asset_name: str) -> tuple[pd.DataFrame, Path]:
@@ -179,7 +179,7 @@ def population_census_tract(context: AssetExecutionContext) -> Output[pd.DataFra
     return Output(df, metadata=metadata)
 
 
-# Population by census tract
+# Crosswalk: census tract to community district
 @asset(
     name="crosswalk_census_tract_to_cd",
     io_manager_key="warehouse_io_manager",
@@ -206,9 +206,38 @@ def crosswalk_census_tract_to_cd(context: AssetExecutionContext) -> Output[pd.Da
     }
     return Output(df, metadata=metadata)
 
+# Crosswalk: census tract to council district
+@asset(
+    name="crosswalk_census_tract_to_cc",
+    io_manager_key="warehouse_io_manager",
+    compute_kind="pandas",
+    group_name="csv_ingest",
+)
+def crosswalk_census_tract_to_cc(context: AssetExecutionContext) -> Output[pd.DataFrame]:
+    stem = "crosswalk_census_tract_to_cc"
+    df, csv_path = _read_csv(context, stem)
+
+    df, col_map = sanitize_bq_columns(df, lowercase=False)
+    context.log.info(f"Renamed columns for BigQuery: {col_map}")
+
+    now_utc = datetime.now(timezone.utc)
+    df["_ingested_at"] = now_utc.isoformat()
+
+    metadata = {
+        "csv_path": MetadataValue.path(str(csv_path)),
+        "rows": len(df),
+        "preview": MetadataValue.md(df.head(10).to_markdown(index=False)),
+        "table": 'new_york_36_transit_census_tract',
+        "source_owner": "Univ. of Minnesota",
+        "notes": "NY-36 tract-level transit thresholds for 2022.",
+    }
+    return Output(df, metadata=metadata)
+
 
 # keep this list updated
 assets_ingest = [affordable_housing_production_by_building,
               enrollment_capacity_and_utilization_reports,
               housingdb_post2010,
-              new_york_36_transit_census_tract, population_census_tract]
+              new_york_36_transit_census_tract, population_census_tract,
+              crosswalk_census_tract_to_cd,
+              crosswalk_census_tract_to_cc]

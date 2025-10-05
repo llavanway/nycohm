@@ -7,6 +7,40 @@ from src.nycohm.helpers.handle_null import standardize_null_values
 configure_logging()
 
 
+# Process crosswalk from census tract to community district
+@asset(
+    ins={"crosswalk_census_tract_to_cd": AssetIn(key=["crosswalk_census_tract_to_cd"])},
+    name="crosswalk_census_tract_to_cd_clean",
+    io_manager_key="warehouse_io_manager",
+    compute_kind="pandas",
+    group_name="process",
+)
+def crosswalk_census_tract_to_cd_clean(crosswalk_census_tract_to_cd) -> Output[pd.DataFrame]:
+    df = crosswalk_census_tract_to_cd
+    df = standardize_null_values(df)
+
+    logging.info(df.head(20).to_string())
+
+    # correct key formats
+    # transform community board key
+    df['borough_code'] = df['CDTACode'].str[:2]
+    df['board_number'] = df['CDTACode'].str[-2:]
+    df['Community_District'] = df['BoroCode'].astype(str) + df['board_number'].astype(str)
+    df['Community_District'] = df['Community_District'].astype('Int64')
+
+    df['Census_Tract'] = df['GEOID'].astype(str)
+
+    # keep only needed columns
+    df = df[['GEOID', 'Census_Tract', 'Community_District','NTAName']]
+
+    metadata = {
+        "rows": len(df),
+        "preview": MetadataValue.md(df.head(10).to_markdown(index=False)),
+    }
+
+    return Output(df, metadata=metadata)
+
+
 # Process census population dataset
 @asset(
     ins={"population_census_tract": AssetIn(key=["population_census_tract"])},
@@ -253,5 +287,6 @@ def main(housingdb_post2010_clean,affordable_housing_production_by_building_clea
 
 
 # keep this list updated
-assets_process = [population_census_tract_clean,new_york_36_transit_census_tract_clean,housingdb_post2010_clean,
+assets_process = [crosswalk_census_tract_to_cd_clean,population_census_tract_clean,
+                  new_york_36_transit_census_tract_clean,housingdb_post2010_clean,
                   affordable_housing_production_by_building_clean, main]
