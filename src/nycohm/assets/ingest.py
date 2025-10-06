@@ -39,7 +39,7 @@ def _read_csv(context: AssetExecutionContext, asset_name: str) -> tuple[pd.DataF
     name="affordable_housing_production_by_building",
     io_manager_key="warehouse_io_manager",
     compute_kind="pandas",
-    group_name="csv_ingest",
+    group_name="ingest_csv",
 )
 def affordable_housing_production_by_building(context: AssetExecutionContext) -> Output[pd.DataFrame]:
     stem = "affordable_housing_production_by_building"
@@ -68,7 +68,7 @@ def affordable_housing_production_by_building(context: AssetExecutionContext) ->
     name="enrollment_capacity_and_utilization_reports",
     io_manager_key="warehouse_io_manager",
     compute_kind="pandas",
-    group_name="csv_ingest",
+    group_name="ingest_csv",
 )
 def enrollment_capacity_and_utilization_reports(context: AssetExecutionContext) -> Output[pd.DataFrame]:
     stem = "enrollment_capacity_and_utilization_reports"
@@ -95,7 +95,7 @@ def enrollment_capacity_and_utilization_reports(context: AssetExecutionContext) 
     name="housingdb_post2010",
     io_manager_key="warehouse_io_manager",
     compute_kind="pandas",
-    group_name="csv_ingest",
+    group_name="ingest_csv",
 )
 def housingdb_post2010(context: AssetExecutionContext) -> Output[pd.DataFrame]:
     stem = "housingdb_post2010"
@@ -128,7 +128,7 @@ def housingdb_post2010(context: AssetExecutionContext) -> Output[pd.DataFrame]:
     name="new_york_36_transit_census_tract",
     io_manager_key="warehouse_io_manager",
     compute_kind="pandas",
-    group_name="csv_ingest",
+    group_name="ingest_csv",
 )
 def new_york_36_transit_census_tract(context: AssetExecutionContext) -> Output[pd.DataFrame]:
     stem = "new_york_36_transit_census_tract_2022"
@@ -156,7 +156,7 @@ def new_york_36_transit_census_tract(context: AssetExecutionContext) -> Output[p
     name="population_census_tract",
     io_manager_key="warehouse_io_manager",
     compute_kind="pandas",
-    group_name="csv_ingest",
+    group_name="ingest_csv",
 )
 def population_census_tract(context: AssetExecutionContext) -> Output[pd.DataFrame]:
     stem = "population_census_tract"
@@ -184,7 +184,7 @@ def population_census_tract(context: AssetExecutionContext) -> Output[pd.DataFra
     name="crosswalk_census_tract_to_cd",
     io_manager_key="warehouse_io_manager",
     compute_kind="pandas",
-    group_name="csv_ingest",
+    group_name="ingest_csv",
 )
 def crosswalk_census_tract_to_cd(context: AssetExecutionContext) -> Output[pd.DataFrame]:
     stem = "crosswalk_census_tract_to_cd"
@@ -211,7 +211,7 @@ def crosswalk_census_tract_to_cd(context: AssetExecutionContext) -> Output[pd.Da
     name="crosswalk_census_tract_to_cc",
     io_manager_key="warehouse_io_manager",
     compute_kind="pandas",
-    group_name="csv_ingest",
+    group_name="ingest_csv",
 )
 def crosswalk_census_tract_to_cc(context: AssetExecutionContext) -> Output[pd.DataFrame]:
     stem = "crosswalk_census_tract_to_cc"

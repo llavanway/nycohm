@@ -11,7 +11,6 @@ configure_logging()
 @asset(
     ins={"housingdb_post2010_clean": AssetIn(key=["housingdb_post2010_clean"]),
          "affordable_housing_production_by_building_clean": AssetIn(key=["affordable_housing_production_by_building_clean"]),
-         "new_york_36_transit_census_tract_clean": AssetIn(key=["new_york_36_transit_census_tract_clean"]),
          "agg_council_district": AssetIn(key=["agg_council_district"]),
          "agg_community_district": AssetIn(key=["agg_community_district"]),
          "agg_census_tract": AssetIn(key=["agg_census_tract"]),
@@ -21,9 +20,8 @@ configure_logging()
     compute_kind="pandas",
     group_name="main",
 )
-def main(housingdb_post2010_clean,affordable_housing_production_by_building_clean,
-         new_york_36_transit_census_tract_clean, agg_council_district,
-         agg_community_district,agg_census_tract) -> Output[pd.DataFrame]:
+def main(housingdb_post2010_clean,affordable_housing_production_by_building_clean, agg_council_district,
+         agg_community_district, agg_census_tract) -> Output[pd.DataFrame]:
     # get only needed columns from each dataset
     shared_columns = ['Community_District','Council_District','Census_Tract','source_dataset','Delivery_Status',
                       'Unit_Type','Housing_Units','Project_Start_Year',
@@ -37,6 +35,9 @@ def main(housingdb_post2010_clean,affordable_housing_production_by_building_clea
     logging.info('rows after union of housing with affordable: {}'.format(len(df)))
 
     # join aggregate metrics from council district, community district, census tract
+    logging.info('check agg_council_district: \n{}'.format(agg_council_district.head(5).to_string()))
+    logging.info('check agg_community_district: \n{}'.format(agg_community_district.head(5).to_string()))
+    logging.info('check agg_census_tract: \n{}'.format(agg_census_tract.head(5).to_string()))
     df = df.merge(agg_council_district,left_on='Council_District',
                   right_on='Council_District',how='left')
     df = df.merge(agg_community_district, left_on='Community_District',

@@ -302,6 +302,8 @@ def agg_community_district(housingdb_post2010_clean,affordable_housing_productio
 @asset(
     ins={"housingdb_post2010_clean": AssetIn(key=["housingdb_post2010_clean"]),
          "affordable_housing_production_by_building_clean": AssetIn(key=["affordable_housing_production_by_building_clean"]),
+         "crosswalk_census_tract_to_cd_clean": AssetIn(key=["crosswalk_census_tract_to_cd_clean"]),
+         "population_census_tract_clean": AssetIn(key=["population_census_tract_clean"]),
          "new_york_36_transit_census_tract_clean": AssetIn(key=["new_york_36_transit_census_tract_clean"])},
     name="agg_census_tract",
     io_manager_key="warehouse_io_manager",
@@ -309,7 +311,27 @@ def agg_community_district(housingdb_post2010_clean,affordable_housing_productio
     group_name="process",
 )
 def agg_census_tract(housingdb_post2010_clean,affordable_housing_production_by_building_clean,
-                     new_york_36_transit_census_tract_clean) -> Output[pd.DataFrame]:
+                     new_york_36_transit_census_tract_clean, crosswalk_census_tract_to_cd_clean,
+                     population_census_tract_clean) -> Output[pd.DataFrame]:
+
+    # merge census tract with population and transit data
+    cw = crosswalk_census_tract_to_cd_clean
+    cw = cw.merge(population_census_tract_clean[['Census_Tract', 'P1_001N']],
+                  left_on='Census_Tract', right_on='Census_Tract', how='left')
+    cw = cw.merge(new_york_36_transit_census_tract_clean[['Census_Tract', 'jobs_at_60_mins_transit_time']],
+                  left_on='Census_Tract', right_on='Census_Tract', how='left')
+
+    # ensure valid int type
+    cw['P1_001N'] = cw['P1_001N'].astype('Int64')
+
+    # calculate average of jobs_at_60_mins_transit_time by census tract, weighted by population
+    cw['weighted_jobs'] = cw['jobs_at_60_mins_transit_time'] * cw['P1_001N']
+    cw_agg = (cw.groupby('Census_Tract', as_index=False)
+              .agg({'weighted_jobs': 'sum', 'P1_001N': 'sum'}))
+    cw_agg['weighted_avg_jobs'] = cw_agg['weighted_jobs'] / cw_agg['P1_001N']
+    cw_agg['weighted_avg_jobs'] = cw_agg['weighted_avg_jobs'].astype('Int64')
+
+    # calculate total housing units by census tract
     h = housingdb_post2010_clean
 
     # filter on completed housing units only
@@ -317,13 +339,14 @@ def agg_census_tract(housingdb_post2010_clean,affordable_housing_production_by_b
 
     # Aggregate total housing units
     ha = (
-        h.groupby(['Census_Tract', 'Project_Completion_Year'], as_index=False)['Housing_Units']
+        h.groupby(['Census_Tract'], as_index=False)['Housing_Units']
         .sum()
         .rename(columns={'Housing_Units': 'Total_Housing_Units'})
     )
 
     logging.info('aggregated rows: {}'.format(len(ha)))
 
+    # calculate total affordable housing units by community district
     a = affordable_housing_production_by_building_clean
 
     logging.info("Preview of affordable_housing_production_by_building_clean:\n{}".format(a.head(20).to_string()))
@@ -331,23 +354,89 @@ def agg_census_tract(housingdb_post2010_clean,affordable_housing_production_by_b
     # filter on completed housing units only
     a = a[a['Delivery_Status'] == 'Delivered']
 
-    logging.info("Preview of filtered affordable_housing_production_by_building_clean:\n{}".format(a.head(20).to_string()))
+    logging.info(
+        "Preview of filtered affordable_housing_production_by_building_clean:\n{}".format(a.head(20).to_string()))
 
     # Aggregate total affordable housing units
     aa = (
-        a.groupby(['Census_Tract', 'Project_Completion_Year'], as_index=False)['Housing_Units']
+        a.groupby(['Census_Tract'], as_index=False)['Housing_Units']
         .sum()
         .rename(columns={'Housing_Units': 'Total_Affordable_Housing_Units'})
     )
 
-    # Merge the two aggregated DataFrames on Council_District and Project_Completion_Year
-    df = ha.merge(aa, on=['Census_Tract', 'Project_Completion_Year'], how='left')
+    logging.info(
+        "Preview of aggregated affordable_housing_production_by_building_clean:\n{}".format(aa.head(70).to_string()))
 
-    # Merge transit data
-    t = new_york_36_transit_census_tract_clean
-    df = df.merge(t[['Census_Tract', 'jobs_at_60_mins_transit_time']], on='Census_Tract', how='left')
+    # merge the aggregated DataFrames. Note: transit/jobs data is at council district level only, not year-specific
+    df = ha.merge(aa, on=['Census_Tract'], how='left')
+    df = df.merge(cw_agg, on='Census_Tract', how='left')
+
+    logging.info(
+        "Preview of housing and affordable merge:\n{}".format(df.head(70).to_string()))
+
+    # Calculate percentiles with dense ranking to reduce duplicates
+    df["Pctl_Total_Housing_Units"] = (
+            df["Total_Housing_Units"]
+            .rank(method="dense", pct=True) * 100
+    )
+    df["Pctl_Total_Housing_Units"] = (
+        pd.to_numeric(df["Pctl_Total_Housing_Units"], errors="coerce")
+        .replace([np.inf, -np.inf], np.nan)
+        .pipe(lambda s: s * 100 if s.max(skipna=True) is not None and s.max(skipna=True) <= 1 else s)
+        .clip(0, 100)
+        .round()
+        .astype("Int64")
+    )
+
+    df["Pctl_Total_Affordable_Housing_Units"] = (
+            df["Total_Affordable_Housing_Units"]
+            .rank(method="dense", pct=True) * 100
+    )
+    df["Pctl_Total_Affordable_Housing_Units"] = (
+        pd.to_numeric(df["Pctl_Total_Affordable_Housing_Units"], errors="coerce")
+        .replace([np.inf, -np.inf], np.nan)
+        .pipe(lambda s: s * 100 if s.max(skipna=True) is not None and s.max(skipna=True) <= 1 else s)
+        .clip(0, 100)
+        .round()
+        .astype("Int64")
+    )
+
+    df["Pctl_Weighted_Transit"] = (
+            df["weighted_avg_jobs"]
+            .rank(method="dense", pct=True) * 100
+    )
+    df["Pctl_Weighted_Transit"] = (
+        pd.to_numeric(df["Pctl_Weighted_Transit"], errors="coerce")
+        .replace([np.inf, -np.inf], np.nan)
+        .pipe(lambda s: s * 100 if s.max(skipna=True) is not None and s.max(skipna=True) <= 1 else s)
+        .clip(0, 100)
+        .round()
+        .astype("Int64")
+    )
+
+    df["PctlDiff_Housing_Units"] = df["Pctl_Total_Housing_Units"] - df["Pctl_Weighted_Transit"]
+    logging.info(
+        "Preview of df after calculating Pctl_Weighted_Transit:\n{}".format(df.head(70).to_string()))
+
+    df["QuintDiff_Housing_Units"] = pd.cut(df["PctlDiff_Housing_Units"], 5, labels=False)
+    df["Grade_Housing_Production"] = pd.cut(
+        df["QuintDiff_Housing_Units"],
+        bins=5,  # 5 quantiles (quintiles)
+        labels=["F", "D", "C", "B", "A"]
+    )
+
+    df["PctlDiff_Affordable_Housing_Units"] = df["Pctl_Total_Affordable_Housing_Units"] - df["Pctl_Weighted_Transit"]
+    df["QuintDiff_Affordable_Housing_Units"] = pd.cut(df["PctlDiff_Affordable_Housing_Units"], 5, labels=False)
+    df["Grade_Affordable_Housing_Production"] = pd.cut(
+        df["QuintDiff_Affordable_Housing_Units"],
+        bins=5,  # 5 quantiles (quintiles)
+        labels=["F", "D", "C", "B", "A"]
+    )
 
     logging.info('aggregated rows of merged df: {}'.format(len(df)))
+
+    # add prefix to columns to indicate council district level; keep Council_District the same
+    df = df.add_prefix('CT_').rename(columns={'CT_Census_Tract': 'Census_Tract'})
 
     logging.info(df.head(20).to_string())
 

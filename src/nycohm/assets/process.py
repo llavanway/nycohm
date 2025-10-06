@@ -193,7 +193,7 @@ def housingdb_post2010_clean(housingdb_post2010) -> Output[pd.DataFrame]:
     df['Borough'] = df['Boro'].map(MAP_BORO_CODE_1)
 
     # add shared metric columns
-    df['Housing_Units'] = df['ClassANet']
+    df['Housing_Units'] = df['ClassANet'].astype('Int64')
 
     # add shared filter columns
     df['Delivery_Status'] = df['Job_Status'].apply(
@@ -219,13 +219,15 @@ def housingdb_post2010_clean(housingdb_post2010) -> Output[pd.DataFrame]:
 
 # Process affordable housing dataset
 @asset(
-    ins={"affordable_housing_production_by_building": AssetIn(key=["affordable_housing_production_by_building"])},
+    ins={"affordable_housing_production_by_building": AssetIn(key=["affordable_housing_production_by_building"]),
+         "crosswalk_census_tract_to_cc_clean": AssetIn(key=["crosswalk_census_tract_to_cc_clean"])},
     name="affordable_housing_production_by_building_clean",
     io_manager_key="warehouse_io_manager",
     compute_kind="pandas",
     group_name="process",
 )
-def affordable_housing_production_by_building_clean(affordable_housing_production_by_building) -> Output[pd.DataFrame]:
+def affordable_housing_production_by_building_clean(affordable_housing_production_by_building,
+                                                    crosswalk_census_tract_to_cc_clean) -> Output[pd.DataFrame]:
     df = affordable_housing_production_by_building
     df = standardize_null_values(df)
 
@@ -255,12 +257,16 @@ def affordable_housing_production_by_building_clean(affordable_housing_productio
     df['Community_District'] = df['Community_District'].astype('Int64')
 
     # add standardized geographic key column names
-    # df['Community_District'] = df['Community_Board']
     df['Council_District'] = df['Council_District'].astype('Int64')
+    # join to crosswalk to get full census tract (default column is in shortened form)
+    df = df.merge(crosswalk_census_tract_to_cc_clean[['Census_Tract', 'Council_District']],
+                  left_on='Council_District', right_on='Council_District',
+                  suffixes = ('_a', '_cw'))
+    df['Census_Tract'] = df['Census_Tract_cw']
     df['Census_Tract'] = df['Census_Tract'].astype(str)
 
     # add shared metric columns
-    df['Housing_Units'] = df['All_Counted_Units']
+    df['Housing_Units'] = df['All_Counted_Units'].astype('Int64')
 
     # add shared filter columns
     df['Delivery_Status'] = df['Project_Completion_Date'].apply(
