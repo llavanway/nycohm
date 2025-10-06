@@ -14,10 +14,14 @@ dagster dev
 
 import os
 from dagster import Definitions
-from src.nycohm.assets.ingest import assets_ingest
-from src.nycohm.assets.process import assets_process
 from src.nycohm.assets.geo_districts import assets_geo_districts
 from src.nycohm.assets.main import assets_main
+from src.nycohm.assets.housingdb_post2010 import assets_housingdb_post2010
+from src.nycohm.assets.affordable_housing_production_by_building import assets_affordable_housing_production_by_building
+from src.nycohm.assets.crosswalk_census_tract_to_cc import assets_crosswalk_census_tract_to_cc
+from src.nycohm.assets.new_york_36_transit_census_tract import assets_new_york_36_transit_census_tract
+from src.nycohm.assets.population_census_tract import assets_population_census_tract
+from src.nycohm.assets.crosswalk_census_tract_to_cd import assets_crosswalk_census_tract_to_cd
 from .resources import DuckDBResource, BigQueryResource
 
 # set this variable to "bigquery" for prod or "duckdb" for local dev
@@ -53,7 +57,15 @@ else:
     )
 
 defs = Definitions(
-    assets=assets_main+assets_geo_districts+assets_process+assets_ingest,
+    assets=assets_housingdb_post2010 +
+           assets_affordable_housing_production_by_building +
+           assets_crosswalk_census_tract_to_cc +
+           assets_new_york_36_transit_census_tract +
+           assets_population_census_tract +
+           assets_crosswalk_census_tract_to_cd +
+           assets_geo_districts +
+           assets_main
+           ,
     resources={
         "db": db_resource,                          # used for READS
         "warehouse_io_manager": warehouse_io_manager,  # used for WRITES

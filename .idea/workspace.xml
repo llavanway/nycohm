@@ -4,12 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2bb4dc5a-4280-44a5-a8e3-4a5fc07717b4" name="Changes" comment="Aggregate geo districts and join to main">
+    <list default="true" id="2bb4dc5a-4280-44a5-a8e3-4a5fc07717b4" name="Changes" comment="Complete beta version of main OBT data output">
+      <change afterPath="$PROJECT_DIR$/src/nycohm/assets/affordable_housing_production_by_building.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/nycohm/assets/crosswalk_census_tract_to_cc.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/nycohm/assets/crosswalk_census_tract_to_cd.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/nycohm/assets/housingdb_post2010.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/nycohm/assets/new_york_36_transit_census_tract.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/nycohm/assets/population_census_tract.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/nycohm/helpers/_read_csv.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/nycohm/assets/geo_districts.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/nycohm/assets/geo_districts.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/nycohm/assets/ingest.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/nycohm/assets/ingest.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/nycohm/assets/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/nycohm/assets/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/nycohm/assets/process.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/nycohm/assets/process.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/nycohm/definitions.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/nycohm/definitions.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -60,6 +64,7 @@
     "Python.dagster_pipeline.executor": "Run",
     "Python.definitions.executor": "Run",
     "Python.helpers.executor": "Run",
+    "Python.housingdb_post2010.executor": "Run",
     "Python.join.executor": "Run",
     "Python.process_datasets.executor": "Run",
     "Python.process_keys.executor": "Run",
@@ -96,7 +101,7 @@
       <recent name="$PROJECT_DIR$/src/nycohm/deprecated" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.scratch">
+  <component name="RunManager" selected="Python.housingdb_post2010">
     <configuration default="true" type="PythonConfigurationType" factoryName="Python">
       <module name="nycohm" />
       <option name="ENV_FILES" value="" />
@@ -114,30 +119,6 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="SCRIPT_NAME" value="" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="bqt2" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="nycohm" />
-      <option name="ENV_FILES" value="" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-        <env name="GOOGLE_APPLICATION_CREDENTIALS" value="$PROJECT_DIR$/credentials/bigquery-key.json" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src/nycohm/helpers" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/nycohm/helpers/bqt2.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -196,6 +177,31 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="housingdb_post2010" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="nycohm" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+        <env name="GOOGLE_APPLICATION_CREDENTIALS" value="$PROJECT_DIR$/credentials/bigquery-key.json" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="SDK_NAME" value="Python 3.12 (nycohm)" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src/nycohm/assets" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/nycohm/assets/housingdb_post2010.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="ingest" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="nycohm" />
       <option name="ENV_FILES" value="" />
@@ -212,7 +218,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/nycohm/assets/ingest.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/nycohm/deprecated/ingest.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -247,19 +253,19 @@
       <method v="2" />
     </configuration>
     <list>
+      <item itemvalue="Python.housingdb_post2010" />
       <item itemvalue="Python.definitions" />
       <item itemvalue="Python.ingest" />
       <item itemvalue="Python.dagster_pipeline" />
       <item itemvalue="Python.scratch" />
-      <item itemvalue="Python.bqt2" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.housingdb_post2010" />
         <item itemvalue="Python.scratch" />
         <item itemvalue="Python.definitions" />
         <item itemvalue="Python.ingest" />
         <item itemvalue="Python.dagster_pipeline" />
-        <item itemvalue="Python.bqt2" />
       </list>
     </recent_temporary>
   </component>
@@ -283,7 +289,7 @@
       <workItem from="1753978989007" duration="31361000" />
       <workItem from="1754315142223" duration="29350000" />
       <workItem from="1754575425612" duration="53805000" />
-      <workItem from="1756994192779" duration="102572000" />
+      <workItem from="1756994192779" duration="106689000" />
     </task>
     <task id="LOCAL-00001" summary="create repo">
       <option name="closed" value="true" />
@@ -573,7 +579,15 @@
       <option name="project" value="LOCAL" />
       <updated>1759769934439</updated>
     </task>
-    <option name="localTasksCounter" value="37" />
+    <task id="LOCAL-00037" summary="Complete beta version of main OBT data output">
+      <option name="closed" value="true" />
+      <created>1759775340248</created>
+      <option name="number" value="00037" />
+      <option name="presentableId" value="LOCAL-00037" />
+      <option name="project" value="LOCAL" />
+      <updated>1759775340248</updated>
+    </task>
+    <option name="localTasksCounter" value="38" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -604,17 +618,19 @@
     <MESSAGE value="Dev work on census track crosswalks" />
     <MESSAGE value="Dev work on census tract crosswalks" />
     <MESSAGE value="Aggregate geo districts and join to main" />
-    <option name="LAST_COMMIT_MESSAGE" value="Aggregate geo districts and join to main" />
+    <MESSAGE value="Complete beta version of main OBT data output" />
+    <option name="LAST_COMMIT_MESSAGE" value="Complete beta version of main OBT data output" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/nycohm$process_keys.coverage" NAME="process_datasets Coverage Results" MODIFIED="1754343903908" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/nycohm/helpers" />
     <SUITE FILE_PATH="coverage/nycohm$bqt2.coverage" NAME="bqt2 Coverage Results" MODIFIED="1754420385408" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/nycohm/helpers" />
     <SUITE FILE_PATH="coverage/nycohm$crosswalk.coverage" NAME="crosswalk Coverage Results" MODIFIED="1753994326321" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/nycohm" />
-    <SUITE FILE_PATH="coverage/nycohm$scratch.coverage" NAME="scratch Coverage Results" MODIFIED="1759340830884" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/nycohm" />
+    <SUITE FILE_PATH="coverage/nycohm$scratch.coverage" NAME="scratch Coverage Results" MODIFIED="1759775957100" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/nycohm" />
     <SUITE FILE_PATH="coverage/nycohm$join.coverage" NAME="join Coverage Results" MODIFIED="1753996752544" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/nycohm" />
     <SUITE FILE_PATH="coverage/nycohm$bqt.coverage" NAME="bqt Coverage Results" MODIFIED="1754315904956" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/nycohm/helpers" />
     <SUITE FILE_PATH="coverage/nycohm$dagster_pipeline.coverage" NAME="dagster_pipeline Coverage Results" MODIFIED="1755542857675" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/nycohm" />
     <SUITE FILE_PATH="coverage/nycohm$assets.coverage" NAME="assets Coverage Results" MODIFIED="1755545503526" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/nycohm" />
+    <SUITE FILE_PATH="coverage/nycohm$housingdb_post2010.coverage" NAME="housingdb_post2010 Coverage Results" MODIFIED="1759776012364" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/nycohm/assets" />
     <SUITE FILE_PATH="coverage/nycohm$helpers.coverage" NAME="helpers Coverage Results" MODIFIED="1754318263539" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/nycohm" />
     <SUITE FILE_PATH="coverage/nycohm$standardize_keys.coverage" NAME="standardize_keys Coverage Results" MODIFIED="1754079078561" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/nycohm" />
     <SUITE FILE_PATH="coverage/nycohm$connect_bq.coverage" NAME="connect_bq Coverage Results" MODIFIED="1754315424319" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/nycohm/helpers" />
