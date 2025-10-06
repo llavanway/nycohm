@@ -6,6 +6,34 @@ from src.nycohm.helpers.handle_null import standardize_null_values
 
 configure_logging()
 
+# Process crosswalk from census tract to council district
+@asset(
+    ins={"crosswalk_census_tract_to_cc": AssetIn(key=["crosswalk_census_tract_to_cc"])},
+    name="crosswalk_census_tract_to_cc_clean",
+    io_manager_key="warehouse_io_manager",
+    compute_kind="pandas",
+    group_name="process",
+)
+def crosswalk_census_tract_to_cc_clean(crosswalk_census_tract_to_cc) -> Output[pd.DataFrame]:
+    df = crosswalk_census_tract_to_cc
+    df = standardize_null_values(df)
+
+    logging.info(df.head(20).to_string())
+
+    # correct key formats
+    df['Council_District'] = df['CCD2023'].astype('Int64')
+    df['Census_Tract']= df['GEOID'].astype(str)
+
+    # keep only needed columns
+    df = df[['GEOID', 'Council_District', 'Census_Tract']]
+
+    metadata = {
+        "rows": len(df),
+        "preview": MetadataValue.md(df.head(10).to_markdown(index=False)),
+    }
+
+    return Output(df, metadata=metadata)
+
 
 # Process crosswalk from census tract to community district
 @asset(
@@ -53,11 +81,18 @@ def population_census_tract_clean(population_census_tract) -> Output[pd.DataFram
     df = population_census_tract
     df = standardize_null_values(df)
 
+    # drop non-standard rows
+    df = df[df['GEO_ID'] != 'Geography']
+    df = df[df['GEO_ID'] != '0400000US36']
+
     # correct key formats
     df['Census_Tract'] = (
         df['GEO_ID'].astype(str)
         .str.extract(r'(\d{11})$', expand=False)
     ).astype(str)
+
+    # adjust types
+    df['P1_001N'] = df['P1_001N'].astype('Int64')
 
     # keep only needed columns
     df = df[['Census_Tract', 'P1_001N']]
@@ -214,8 +249,10 @@ def affordable_housing_production_by_building_clean(affordable_housing_productio
     }
 
     df['borough_code'] = df['Community_Board'].str[:2]
-    df['board_number'] = df['Community_Board'].str[-2:]
-    df['Community_District'] = df['borough_code'].map(MAP_BORO_CODE_2).astype('Int64') + df['board_number'].astype('Int64')
+    df['borough_number'] = df['borough_code'].map(MAP_BORO_CODE_2).astype(str)
+    df['board_number'] = df['Community_Board'].str[-2:].astype(str)
+    df['Community_District'] = df['borough_number'] + df['board_number']
+    df['Community_District'] = df['Community_District'].astype('Int64')
 
     # add standardized geographic key column names
     # df['Community_District'] = df['Community_Board']
@@ -245,48 +282,8 @@ def affordable_housing_production_by_building_clean(affordable_housing_productio
     return Output(df, metadata=metadata)
 
 
-# Create final joined dataset
-@asset(
-    ins={"housingdb_post2010_clean": AssetIn(key=["housingdb_post2010_clean"]),
-         "affordable_housing_production_by_building_clean": AssetIn(key=["affordable_housing_production_by_building_clean"]),
-         "new_york_36_transit_census_tract_clean": AssetIn(key=["new_york_36_transit_census_tract_clean"])},
-    name="main",
-    io_manager_key="warehouse_io_manager",
-    compute_kind="pandas",
-    group_name="process",
-)
-def main(housingdb_post2010_clean,affordable_housing_production_by_building_clean,
-         new_york_36_transit_census_tract_clean) -> Output[pd.DataFrame]:
-    # get only needed columns from each dataset
-    shared_columns = ['Community_District','Council_District','Census_Tract','source_dataset','Delivery_Status',
-                      'Unit_Type','Housing_Units','Project_Start_Year',
-                      'Project_Completion_Year','Borough','_ingested_at']
-    housingdb_post2010_clean = housingdb_post2010_clean[shared_columns]
-    affordable_housing_production_by_building_clean = affordable_housing_production_by_building_clean[shared_columns
-    ]
-
-    # union of housing with affordable
-    df = pd.concat([housingdb_post2010_clean, affordable_housing_production_by_building_clean], ignore_index=True)
-
-    logging.info('rows prior to transit merge: {}'.format(len(df)))
-
-    # join transit
-    df = df.merge(new_york_36_transit_census_tract_clean,left_on='Census_Tract',
-                  right_on='Census_Tract',how='left')
-
-    logging.info('rows after transit merge: {}'.format(len(df)))
-
-    logging.info(df.head(20).to_string())
-
-    metadata = {
-        "rows": len(df),
-        "preview": MetadataValue.md(df.head(10).to_markdown(index=False)),
-    }
-
-    return Output(df, metadata=metadata)
-
-
 # keep this list updated
-assets_process = [crosswalk_census_tract_to_cd_clean,population_census_tract_clean,
+assets_process = [crosswalk_census_tract_to_cc_clean,
+                  crosswalk_census_tract_to_cd_clean,population_census_tract_clean,
                   new_york_36_transit_census_tract_clean,housingdb_post2010_clean,
-                  affordable_housing_production_by_building_clean, main]
+                  affordable_housing_production_by_building_clean]

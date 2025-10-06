@@ -4,10 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2bb4dc5a-4280-44a5-a8e3-4a5fc07717b4" name="Changes" comment="Dev work on census track crosswalks">
+    <list default="true" id="2bb4dc5a-4280-44a5-a8e3-4a5fc07717b4" name="Changes" comment="Dev work on census tract crosswalks">
+      <change afterPath="$PROJECT_DIR$/src/nycohm/assets/main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/nycohm/assets/ingest.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/nycohm/assets/ingest.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/nycohm/assets/geo_districts.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/nycohm/assets/geo_districts.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/nycohm/assets/process.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/nycohm/assets/process.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/nycohm/definitions.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/nycohm/definitions.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -281,7 +283,7 @@
       <workItem from="1753978989007" duration="31361000" />
       <workItem from="1754315142223" duration="29350000" />
       <workItem from="1754575425612" duration="53805000" />
-      <workItem from="1756994192779" duration="81593000" />
+      <workItem from="1756994192779" duration="97259000" />
     </task>
     <task id="LOCAL-00001" summary="create repo">
       <option name="closed" value="true" />
@@ -555,7 +557,15 @@
       <option name="project" value="LOCAL" />
       <updated>1759607701919</updated>
     </task>
-    <option name="localTasksCounter" value="35" />
+    <task id="LOCAL-00035" summary="Dev work on census tract crosswalks">
+      <option name="closed" value="true" />
+      <created>1759676026638</created>
+      <option name="number" value="00035" />
+      <option name="presentableId" value="LOCAL-00035" />
+      <option name="project" value="LOCAL" />
+      <updated>1759676026638</updated>
+    </task>
+    <option name="localTasksCounter" value="36" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -584,7 +594,8 @@
     <MESSAGE value="add assets for geo district aggregations" />
     <MESSAGE value="add maps and aggregations for geo districts" />
     <MESSAGE value="Dev work on census track crosswalks" />
-    <option name="LAST_COMMIT_MESSAGE" value="Dev work on census track crosswalks" />
+    <MESSAGE value="Dev work on census tract crosswalks" />
+    <option name="LAST_COMMIT_MESSAGE" value="Dev work on census tract crosswalks" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/nycohm$process_keys.coverage" NAME="process_datasets Coverage Results" MODIFIED="1754343903908" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/nycohm/helpers" />

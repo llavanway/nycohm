@@ -17,6 +17,7 @@ from dagster import Definitions
 from src.nycohm.assets.ingest import assets_ingest
 from src.nycohm.assets.process import assets_process
 from src.nycohm.assets.geo_districts import assets_geo_districts
+from src.nycohm.assets.main import assets_main
 from .resources import DuckDBResource, BigQueryResource
 
 # set this variable to "bigquery" for prod or "duckdb" for local dev
@@ -52,7 +53,7 @@ else:
     )
 
 defs = Definitions(
-    assets=assets_geo_districts+assets_process+assets_ingest,
+    assets=assets_main+assets_geo_districts+assets_process+assets_ingest,
     resources={
         "db": db_resource,                          # used for READS
         "warehouse_io_manager": warehouse_io_manager,  # used for WRITES
