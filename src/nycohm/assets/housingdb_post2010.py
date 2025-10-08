@@ -86,6 +86,9 @@ def housingdb_post2010_clean(housingdb_post2010) -> Output[pd.DataFrame]:
     }
     df['Borough'] = df['Boro'].map(MAP_BORO_CODE_1)
 
+    # add key for Project level
+    df['Project_Key'] = df['Job_Number'].astype(str)
+
     # add shared metric columns
     df['Housing_Units'] = df['ClassANet'].astype('Int64')
 

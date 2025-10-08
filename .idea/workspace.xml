@@ -4,16 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2bb4dc5a-4280-44a5-a8e3-4a5fc07717b4" name="Changes" comment="Complete beta version of main OBT data output">
-      <change afterPath="$PROJECT_DIR$/src/nycohm/assets/affordable_housing_production_by_building.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/nycohm/assets/crosswalk_census_tract_to_cc.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/nycohm/assets/crosswalk_census_tract_to_cd.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/nycohm/assets/housingdb_post2010.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/nycohm/assets/new_york_36_transit_census_tract.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/nycohm/assets/population_census_tract.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/nycohm/helpers/_read_csv.py" afterDir="false" />
+    <list default="true" id="2bb4dc5a-4280-44a5-a8e3-4a5fc07717b4" name="Changes" comment="Refactor ingest and process assets">
+      <change afterPath="$PROJECT_DIR$/src/nycohm/helpers/make_full_census_tract.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/nycohm/definitions.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/nycohm/definitions.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/nycohm/assets/affordable_housing_production_by_building.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/nycohm/assets/affordable_housing_production_by_building.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -94,11 +88,11 @@
       <recent name="$PROJECT_DIR$/data/raw_csv" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/nycohm/deprecated" />
       <recent name="$PROJECT_DIR$/data/crosswalk" />
       <recent name="$PROJECT_DIR$/data/raw_csv" />
       <recent name="$PROJECT_DIR$/src/nycohm/assets" />
       <recent name="$PROJECT_DIR$/data/csv" />
-      <recent name="$PROJECT_DIR$/src/nycohm/deprecated" />
     </key>
   </component>
   <component name="RunManager" selected="Python.housingdb_post2010">
@@ -289,7 +283,7 @@
       <workItem from="1753978989007" duration="31361000" />
       <workItem from="1754315142223" duration="29350000" />
       <workItem from="1754575425612" duration="53805000" />
-      <workItem from="1756994192779" duration="106689000" />
+      <workItem from="1756994192779" duration="114953000" />
     </task>
     <task id="LOCAL-00001" summary="create repo">
       <option name="closed" value="true" />
@@ -587,7 +581,15 @@
       <option name="project" value="LOCAL" />
       <updated>1759775340248</updated>
     </task>
-    <option name="localTasksCounter" value="38" />
+    <task id="LOCAL-00038" summary="Refactor ingest and process assets">
+      <option name="closed" value="true" />
+      <created>1759779531887</created>
+      <option name="number" value="00038" />
+      <option name="presentableId" value="LOCAL-00038" />
+      <option name="project" value="LOCAL" />
+      <updated>1759779531887</updated>
+    </task>
+    <option name="localTasksCounter" value="39" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -619,7 +621,8 @@
     <MESSAGE value="Dev work on census tract crosswalks" />
     <MESSAGE value="Aggregate geo districts and join to main" />
     <MESSAGE value="Complete beta version of main OBT data output" />
-    <option name="LAST_COMMIT_MESSAGE" value="Complete beta version of main OBT data output" />
+    <MESSAGE value="Refactor ingest and process assets" />
+    <option name="LAST_COMMIT_MESSAGE" value="Refactor ingest and process assets" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/nycohm$process_keys.coverage" NAME="process_datasets Coverage Results" MODIFIED="1754343903908" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/nycohm/helpers" />

@@ -8,6 +8,7 @@ from src.nycohm.helpers.log_config import configure_logging
 from src.nycohm.helpers.prep_for_bq import sanitize_bq_columns
 from src.nycohm.helpers._read_csv import _read_csv
 from src.nycohm.helpers.handle_null import standardize_null_values
+from src.nycohm.helpers.make_full_census_tract import make_full_census_tract
 
 configure_logging()
 
@@ -43,20 +44,15 @@ def affordable_housing_production_by_building(context: AssetExecutionContext) ->
 
 #process
 @asset(
-    ins={"affordable_housing_production_by_building": AssetIn(key=["affordable_housing_production_by_building"]),
-         "crosswalk_census_tract_to_cc_clean": AssetIn(key=["crosswalk_census_tract_to_cc_clean"])},
+    ins={"affordable_housing_production_by_building": AssetIn(key=["affordable_housing_production_by_building"])},
     name="affordable_housing_production_by_building_clean",
     io_manager_key="warehouse_io_manager",
     compute_kind="pandas",
     group_name="process",
 )
-def affordable_housing_production_by_building_clean(affordable_housing_production_by_building,
-                                                    crosswalk_census_tract_to_cc_clean) -> Output[pd.DataFrame]:
+def affordable_housing_production_by_building_clean(affordable_housing_production_by_building) -> Output[pd.DataFrame]:
     df = affordable_housing_production_by_building
     df = standardize_null_values(df)
-
-    # correct key formats
-    df['BBL'] = df['BBL'].astype('Int64')
 
     # convert date columns to proper format
     df['Project_Start_Date'] = pd.to_datetime(df['Project_Start_Date'])
@@ -82,11 +78,17 @@ def affordable_housing_production_by_building_clean(affordable_housing_productio
 
     # add standardized geographic key column names
     df['Council_District'] = df['Council_District'].astype('Int64')
-    # join to crosswalk to get full census tract (default column is in shortened form)
-    df = df.merge(crosswalk_census_tract_to_cc_clean[['Census_Tract', 'Council_District']],
-                  left_on='Council_District', right_on='Council_District',
-                  suffixes = ('_a', '_cw'))
-    df['Census_Tract'] = df['Census_Tract_cw']
+
+    # add key for Project level
+    df['Project_Key'] = df['Project_ID'].astype(str)
+
+    # infer full Census_Tract
+    df = make_full_census_tract(df, tract_col="Census_Tract", borough_col="Borough")
+    df["Census_Tract"] = df["Census_Tract_Full"]
+    df.drop('Census_Tract_Full', axis=1, inplace=True)
+
+    # correct key formats
+    df['BBL'] = df['BBL'].astype('Int64')
     df['Census_Tract'] = df['Census_Tract'].astype(str)
 
     # add shared metric columns

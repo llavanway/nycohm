@@ -23,7 +23,7 @@ configure_logging()
 def main(housingdb_post2010_clean,affordable_housing_production_by_building_clean, agg_council_district,
          agg_community_district, agg_census_tract) -> Output[pd.DataFrame]:
     # get only needed columns from each dataset
-    shared_columns = ['Community_District','Council_District','Census_Tract','source_dataset','Delivery_Status',
+    shared_columns = ['Project_Key','Community_District','Council_District','Census_Tract','source_dataset','Delivery_Status',
                       'Unit_Type','Housing_Units','Project_Start_Year',
                       'Project_Completion_Year','Borough','_ingested_at']
     housingdb_post2010_clean = housingdb_post2010_clean[shared_columns]
