@@ -3,64 +3,73 @@ from dagster import asset, Output, MetadataValue, AssetExecutionContext, AssetIn
 import logging
 from src.nycohm.helpers.log_config import configure_logging
 from itertools import product
+from math import prod
 
 configure_logging()
 
 
 # Create final joined dataset
 @asset(
-    ins={"housingdb_post2010_clean": AssetIn(key=["housingdb_post2010_clean"]),
-         "affordable_housing_production_by_building_clean": AssetIn(key=["affordable_housing_production_by_building_clean"]),
-         "agg_council_district": AssetIn(key=["agg_council_district"]),
-         "agg_community_district": AssetIn(key=["agg_community_district"]),
-         "agg_census_tract": AssetIn(key=["agg_census_tract"]),
-         },
+    ins={"agg_housing_metrics_cc": AssetIn(key=["agg_housing_metrics_cc"]),
+    "agg_housing_metrics_cd": AssetIn(key=["agg_housing_metrics_cd"]),
+    "agg_housing_metrics_ct": AssetIn(key=["agg_housing_metrics_ct"]),
+    "agg_council_district": AssetIn(key=["agg_council_district"]),
+    "agg_community_district": AssetIn(key=["agg_community_district"]),
+    "agg_census_tract": AssetIn(key=["agg_census_tract"]),
+     },
     name="main",
     io_manager_key="warehouse_io_manager",
     compute_kind="pandas",
     group_name="main",
 )
-def main(housingdb_post2010_clean,affordable_housing_production_by_building_clean, agg_council_district,
-         agg_community_district, agg_census_tract) -> Output[pd.DataFrame]:
-    # get only needed columns from each dataset
-    shared_columns = ['Project_Key','Community_District','Council_District','Census_Tract','source_dataset','Delivery_Status',
-                      'Unit_Type','Housing_Units','Project_Start_Year',
-                      'Project_Completion_Year','Borough','_ingested_at']
-    housingdb_post2010_clean = housingdb_post2010_clean[shared_columns]
-    affordable_housing_production_by_building_clean = affordable_housing_production_by_building_clean[shared_columns
-    ]
+def main(agg_housing_metrics_cc,agg_housing_metrics_cd, agg_housing_metrics_ct,
+         agg_council_district, agg_community_district, agg_census_tract) -> Output[pd.DataFrame]:
 
-    # union of housing with affordable
-    df = pd.concat([housingdb_post2010_clean, affordable_housing_production_by_building_clean], ignore_index=True)
-    logging.info('rows after union of housing with affordable: {}'.format(len(df)))
+    # council district
+    df_cc = agg_housing_metrics_cc
+    # merge with district-level metrics
+    df_cc = df_cc.merge(agg_council_district, left_on='Council_District',right_on='Council_District', how='left')
+    # format
+    df_cc = df_cc.rename(columns=lambda c: c[3:] if isinstance(c, str) and c.startswith("CC_") else c)
+    df_cc['District_Type'] = 'Council_District'
+    df_cc.rename(columns={'Council_District': 'District_Value'}, inplace=True)
+    logging.info('check df_cc head: \n{}'.format(df_cc.head(5).to_string()))
+    logging.info('check df_cc dtypes: \n{}'.format(df_cc.dtypes.to_string()))
 
-    # # Ensure all dimension values have >=1 row by creating cartesian product data (resolves map display issue)
-    # c_cols = shared_columns.remove(['Project_Key','source_dataset','_ingested_at'])
-    # # Collect unique non-null values for each column (sorted)
-    # uniques = {c: sorted(df[c].dropna().unique().tolist()) for c in c_cols}
-    # # Build Cartesian product
-    # product_rows = list(product(*(uniques[c] for c in c_cols)))
-    # # Create resulting dataframe
-    # cartesian_df = pd.DataFrame(product_rows, columns=c_cols)
-    # cartesian_df['Project_Key'] = 'placeholder_key'
-    # cartesian_df['source_dataset'] = 'placeholder_dataset'
-    # cartesian_df['_ingested_at'] = None
-    # # Join with main dataset
-    # df = pd.concat([df, cartesian_df], ignore_index=True)
-    # logging.info('rows after addition of placeholder data: {}'.format(len(df)))
+    # community district
+    df_cd = agg_housing_metrics_cd
+    # merge with district-level metrics
+    df_cd = df_cd.merge(agg_community_district, left_on='Community_District', right_on='Community_District', how='left')
+    # format
+    df_cd = df_cd.rename(columns=lambda c: c[3:] if isinstance(c, str) and c.startswith("CD_") else c)
+    df_cd['District_Type'] = 'Community_District'
+    df_cd.rename(columns={'Community_District': 'District_Value'}, inplace=True)
+    logging.info('check df_cd head: \n{}'.format(df_cd.head(5).to_string()))
+    logging.info('check df_cd dtypes: \n{}'.format(df_cd.dtypes.to_string()))
 
-    # join aggregate metrics from council district, community district, census tract
-    logging.info('check agg_council_district: \n{}'.format(agg_council_district.head(5).to_string()))
-    logging.info('check agg_community_district: \n{}'.format(agg_community_district.head(5).to_string()))
-    logging.info('check agg_census_tract: \n{}'.format(agg_census_tract.head(5).to_string()))
-    df = df.merge(agg_council_district,left_on='Council_District',
-                  right_on='Council_District',how='left')
-    df = df.merge(agg_community_district, left_on='Community_District',
-                  right_on='Community_District', how='left')
-    df = df.merge(agg_census_tract, left_on='Census_Tract',
-                  right_on='Census_Tract', how='left')
+    # census tract
+    df_ct = agg_housing_metrics_ct
+    # merge with district-level metrics
+    df_ct = df_ct.merge(agg_census_tract, left_on='Census_Tract', right_on='Census_Tract', how='left')
+    # format
+    df_ct = df_ct.rename(columns=lambda c: c[3:] if isinstance(c, str) and c.startswith("CT_") else c)
+    df_ct['District_Type'] = 'Census_Tract'
+    df_ct.rename(columns={'Census_Tract': 'District_Value'}, inplace=True)
+    logging.info('check df_ct head: \n{}'.format(df_ct.head(5).to_string()))
+    logging.info('check df_ct dtypes: \n{}'.format(df_ct.dtypes.to_string()))
 
-    logging.info('rows after joining aggregate metrics: {}'.format(len(df)))
+    # join district and dimension-level aggregations
+    df = pd.concat([df_cc, df_cd, df_ct], ignore_index=True)
+    logging.info('check initial dimension-level agg merge: \n{}'.format(df.sample(n=20).to_string()))
+
+    # convert geo key types
+    df['District_Value'] = df['District_Value'].astype(str)
+
+    # column order
+    district_type_column = df.pop('District_Type')
+    df.insert(0, 'District_Type', district_type_column)  # Insert 'Name' at index 0
+
+    logging.info('rows after joining district-level metrics: {}'.format(len(df)))
 
     logging.info(df.head(20).to_string())
 

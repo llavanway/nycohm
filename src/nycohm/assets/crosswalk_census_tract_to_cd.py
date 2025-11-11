@@ -59,7 +59,7 @@ def crosswalk_census_tract_to_cd_clean(crosswalk_census_tract_to_cd) -> Output[p
     df['borough_code'] = df['CDTACode'].str[:2]
     df['board_number'] = df['CDTACode'].str[-2:]
     df['Community_District'] = df['BoroCode'].astype(str) + df['board_number'].astype(str)
-    df['Community_District'] = df['Community_District'].astype('Int64')
+    df['Community_District'] = df['Community_District'].astype('Int64').astype(str)
 
     df['Census_Tract'] = df['GEOID'].astype(str)
 

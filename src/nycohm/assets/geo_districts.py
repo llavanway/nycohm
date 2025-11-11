@@ -133,6 +133,48 @@ def _create_output(df: pd.DataFrame) -> Output[pd.DataFrame]:
     }
     return Output(df, metadata=metadata)
 
+def _aggregate_housing_by_dims(
+    level: str, housing_df: pd.DataFrame, affordable_df: pd.DataFrame
+) -> pd.DataFrame:
+    """Aggregate housing units by the requested level while preserving specified dimensions
+    and include a Housing_Units_Affordable column from the affordable dataset."""
+    logging.info("Aggregating housing metrics for %s preserving dimensions", level)
+    group_cols = [
+        level,
+        "Delivery_Status",
+        "Unit_Type",
+        "Project_Start_Year",
+        "Project_Completion_Year",
+        "Borough",
+    ]
+
+    h_df = housing_df.copy()
+    a_df = affordable_df.copy()
+
+    aggregated = (
+        h_df.groupby(group_cols, as_index=False)["Housing_Units"]
+        .sum()
+        .astype({"Housing_Units": "Int64"})
+    )
+
+    aggregated_affordable = (
+        a_df.groupby(group_cols, as_index=False)["Housing_Units"]
+        .sum()
+        .rename(columns={"Housing_Units": "Housing_Units_Affordable"})
+        .astype({"Housing_Units_Affordable": "Int64"})
+    )
+
+    # Merge so we retain groupings present in either dataset
+    merged = aggregated.merge(aggregated_affordable, on=group_cols, how="outer")
+
+    logging.info(
+        "Aggregated housing metrics rows for %s at dims %s: %s",
+        level,
+        group_cols[1:],
+        len(merged),
+    )
+    return merged
+
 
 def aggregate_geo_level(
     level: str,
@@ -163,8 +205,23 @@ def aggregate_geo_level(
         "affordable_housing_production_by_building_clean",
     )
 
-    merged = housing_agg.merge(affordable_agg, on=level, how="left")
-    merged = merged.merge(weighted_transit, on=level, how="left")
+    # Use an outer merge so all districts from any source are retained,
+    # then ensure unit columns exist and fill missing values with 0.
+    merged = (
+        housing_agg.merge(affordable_agg, on=level, how="outer")
+        .merge(weighted_transit, on=level, how="outer")
+    )
+
+    # Ensure the expected unit columns exist
+    for col in ["Total_Housing_Units", "Total_Affordable_Housing_Units"]:
+        if col not in merged.columns:
+            merged[col] = pd.Series(dtype="Int64")
+
+    merged[["Total_Housing_Units", "Total_Affordable_Housing_Units"]] = (
+        merged[["Total_Housing_Units", "Total_Affordable_Housing_Units"]]
+        .fillna(0)
+        .astype("Int64")
+    )
 
     logging.info(
         "Preview of merged dataframe for %s:\n%s",
@@ -307,8 +364,90 @@ def agg_census_tract(
     return _create_output(df)
 
 
+@asset(
+    ins={
+        "housingdb_post2010_clean": AssetIn(key=["housingdb_post2010_clean"]),
+        "affordable_housing_production_by_building_clean": AssetIn(
+            key=["affordable_housing_production_by_building_clean"]
+        ),
+        "crosswalk_census_tract_to_cc_clean": AssetIn(
+            key=["crosswalk_census_tract_to_cc_clean"]
+        ),
+    },
+    name="agg_housing_metrics_cc",
+    io_manager_key="warehouse_io_manager",
+    compute_kind="pandas",
+    group_name="process",
+)
+def agg_housing_metrics_cc(
+    housingdb_post2010_clean,
+    affordable_housing_production_by_building_clean,
+    crosswalk_census_tract_to_cc_clean,  # kept in inputs for consistency; not required here
+) -> Output[pd.DataFrame]:
+    df = _aggregate_housing_by_dims(
+        "Council_District", housingdb_post2010_clean, affordable_housing_production_by_building_clean
+    )
+    return _create_output(df)
+
+
+@asset(
+    ins={
+        "housingdb_post2010_clean": AssetIn(key=["housingdb_post2010_clean"]),
+        "affordable_housing_production_by_building_clean": AssetIn(
+            key=["affordable_housing_production_by_building_clean"]
+        ),
+        "crosswalk_census_tract_to_cd_clean": AssetIn(
+            key=["crosswalk_census_tract_to_cd_clean"]
+        ),
+    },
+    name="agg_housing_metrics_cd",
+    io_manager_key="warehouse_io_manager",
+    compute_kind="pandas",
+    group_name="process",
+)
+def agg_housing_metrics_cd(
+    housingdb_post2010_clean,
+    affordable_housing_production_by_building_clean,
+    crosswalk_census_tract_to_cd_clean,  # kept in inputs for consistency; not required here
+) -> Output[pd.DataFrame]:
+    df = _aggregate_housing_by_dims(
+        "Community_District", housingdb_post2010_clean, affordable_housing_production_by_building_clean
+    )
+    return _create_output(df)
+
+
+@asset(
+    ins={
+        "housingdb_post2010_clean": AssetIn(key=["housingdb_post2010_clean"]),
+        "affordable_housing_production_by_building_clean": AssetIn(
+            key=["affordable_housing_production_by_building_clean"]
+        ),
+        # a crosswalk input is optional for census tract; included for symmetry with other assets
+        "crosswalk_census_tract_to_cd_clean": AssetIn(
+            key=["crosswalk_census_tract_to_cd_clean"]
+        ),
+    },
+    name="agg_housing_metrics_ct",
+    io_manager_key="warehouse_io_manager",
+    compute_kind="pandas",
+    group_name="process",
+)
+def agg_housing_metrics_ct(
+    housingdb_post2010_clean,
+    affordable_housing_production_by_building_clean,
+    crosswalk_census_tract_to_cd_clean,
+) -> Output[pd.DataFrame]:
+    df = _aggregate_housing_by_dims(
+        "Census_Tract", housingdb_post2010_clean, affordable_housing_production_by_building_clean
+    )
+    return _create_output(df)
+
+
 assets_geo_districts = [
     agg_council_district,
     agg_community_district,
     agg_census_tract,
+    agg_housing_metrics_cc,
+    agg_housing_metrics_cd,
+    agg_housing_metrics_ct
 ]

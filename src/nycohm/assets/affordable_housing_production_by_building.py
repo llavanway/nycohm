@@ -74,10 +74,6 @@ def affordable_housing_production_by_building_clean(affordable_housing_productio
     df['borough_number'] = df['borough_code'].map(MAP_BORO_CODE_2).astype(str)
     df['board_number'] = df['Community_Board'].str[-2:].astype(str)
     df['Community_District'] = df['borough_number'] + df['board_number']
-    df['Community_District'] = df['Community_District'].astype('Int64')
-
-    # add standardized geographic key column names
-    df['Council_District'] = df['Council_District'].astype('Int64')
 
     # add key for Project level
     df['Project_Key'] = df['Project_ID'].astype(str)
@@ -87,9 +83,11 @@ def affordable_housing_production_by_building_clean(affordable_housing_productio
     df["Census_Tract"] = df["Census_Tract_Full"]
     df.drop('Census_Tract_Full', axis=1, inplace=True)
 
-    # correct key formats
-    df['BBL'] = df['BBL'].astype('Int64')
+    # add standardized geographic key column names and correct formats
+    df['Council_District'] = df['Council_District'].astype('Int64').astype(str)
+    df['Community_District'] = df['Community_District'].astype('Int64').astype(str)
     df['Census_Tract'] = df['Census_Tract'].astype(str)
+    df['BBL'] = df['BBL'].astype('Int64')
 
     # add shared metric columns
     df['Housing_Units'] = df['All_Counted_Units'].astype('Int64')

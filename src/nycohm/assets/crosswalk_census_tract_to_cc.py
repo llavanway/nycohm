@@ -54,7 +54,7 @@ def crosswalk_census_tract_to_cc_clean(crosswalk_census_tract_to_cc) -> Output[p
     logging.info(df.head(20).to_string())
 
     # correct key formats
-    df['Council_District'] = df['CCD2023'].astype('Int64')
+    df['Council_District'] = df['CCD2023'].astype('Int64').astype(str)
     df['Census_Tract']= df['GEOID'].astype(str)
 
     # keep only needed columns

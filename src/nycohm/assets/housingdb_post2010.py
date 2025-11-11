@@ -73,9 +73,9 @@ def housingdb_post2010_clean(housingdb_post2010) -> Output[pd.DataFrame]:
     # add dataset identifier
     df['source_dataset'] = 'Housing Units'
 
-    # add standardized geographic key column names
-    df['Community_District'] = df['CommntyDst'].astype('Int64')
-    df['Council_District'] = df['CouncilDst'].astype('Int64')
+    # add standardized geographic key column names and formats
+    df['Community_District'] = df['CommntyDst'].astype('Int64').astype(str)
+    df['Council_District'] = df['CouncilDst'].astype('Int64').astype(str)
     df['Census_Tract'] = df['CenTract20'].astype(str)
     MAP_BORO_CODE_1 = {
         1: 'Manhattan',
