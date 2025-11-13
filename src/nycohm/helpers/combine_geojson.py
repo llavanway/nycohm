@@ -18,14 +18,20 @@ def combine_geojson(geojson_specs, output_path):
            Each tuple = (file_path, district_type_label, id_column_name)
        """
     gdfs = []
+    target_crs = "EPSG:4326"
+
     for file_path, district_type, id_col in geojson_specs:
         gdf = gpd.read_file(file_path)
+        if gdf.crs is None:
+            gdf = gdf.set_crs(target_crs)
+        elif str(gdf.crs).upper() != target_crs:
+            gdf = gdf.to_crs(target_crs)
         gdf["district_type"] = district_type
         gdf["district_id"] = gdf[id_col].astype(str)
         gdfs.append(gdf[["district_type", "district_id", "geometry"]])
 
     combined = pd.concat(gdfs, ignore_index=True)
-    combined = gpd.GeoDataFrame(combined, geometry="geometry", crs="EPSG:4326")
+    combined = gpd.GeoDataFrame(combined, geometry="geometry", crs=target_crs)
 
     output_path = Path(output_path)
     output_path.parent.mkdir(parents=True, exist_ok=True)
