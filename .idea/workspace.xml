@@ -4,10 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2bb4dc5a-4280-44a5-a8e3-4a5fc07717b4" name="Changes" comment="Refactor ingest and process assets">
-      <change afterPath="$PROJECT_DIR$/src/nycohm/helpers/make_full_census_tract.py" afterDir="false" />
+    <list default="true" id="2bb4dc5a-4280-44a5-a8e3-4a5fc07717b4" name="Changes" comment="Include districts with no housing production in aggregation">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/nycohm/assets/affordable_housing_production_by_building.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/nycohm/assets/affordable_housing_production_by_building.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -48,43 +46,45 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Python.assets.executor": "Run",
-    "Python.bqt.executor": "Run",
-    "Python.bqt2.executor": "Run",
-    "Python.connect_bq.executor": "Debug",
-    "Python.crosswalk.executor": "Run",
-    "Python.dagster_pipeline.executor": "Run",
-    "Python.definitions.executor": "Run",
-    "Python.helpers.executor": "Run",
-    "Python.housingdb_post2010.executor": "Run",
-    "Python.join.executor": "Run",
-    "Python.process_datasets.executor": "Run",
-    "Python.process_keys.executor": "Run",
-    "Python.scratch.executor": "Run",
-    "Python.standardize_keys.executor": "Run",
-    "Python.test.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "main",
-    "last_opened_file_path": "/Users/lukelavanway/PycharmProjects/nycohm/data/raw_csv",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "preferences.pluginManager",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Python.assets.executor&quot;: &quot;Run&quot;,
+    &quot;Python.bqt.executor&quot;: &quot;Run&quot;,
+    &quot;Python.bqt2.executor&quot;: &quot;Run&quot;,
+    &quot;Python.combine_geojson.executor&quot;: &quot;Run&quot;,
+    &quot;Python.connect_bq.executor&quot;: &quot;Debug&quot;,
+    &quot;Python.crosswalk.executor&quot;: &quot;Run&quot;,
+    &quot;Python.dagster_pipeline.executor&quot;: &quot;Run&quot;,
+    &quot;Python.definitions.executor&quot;: &quot;Run&quot;,
+    &quot;Python.helpers.executor&quot;: &quot;Run&quot;,
+    &quot;Python.housingdb_post2010.executor&quot;: &quot;Run&quot;,
+    &quot;Python.join.executor&quot;: &quot;Run&quot;,
+    &quot;Python.process_datasets.executor&quot;: &quot;Run&quot;,
+    &quot;Python.process_keys.executor&quot;: &quot;Run&quot;,
+    &quot;Python.scratch.executor&quot;: &quot;Run&quot;,
+    &quot;Python.standardize_keys.executor&quot;: &quot;Run&quot;,
+    &quot;Python.test.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/lukelavanway/PycharmProjects/nycohm/data/prod_data&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
-  "keyToStringList": {
-    "DatabaseDriversLRU": [
-      "bigquery"
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;bigquery&quot;
     ]
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/data/prod_data" />
       <recent name="$PROJECT_DIR$/data/raw_csv" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
@@ -95,7 +95,7 @@
       <recent name="$PROJECT_DIR$/data/csv" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.housingdb_post2010">
+  <component name="RunManager" selected="Python.combine_geojson">
     <configuration default="true" type="PythonConfigurationType" factoryName="Python">
       <module name="nycohm" />
       <option name="ENV_FILES" value="" />
@@ -121,7 +121,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="dagster_pipeline" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="combine_geojson" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="nycohm" />
       <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -132,12 +132,12 @@
       </envs>
       <option name="SDK_HOME" value="" />
       <option name="SDK_NAME" value="Python 3.12 (nycohm)" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src/nycohm" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src/nycohm/helpers" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/nycohm/dagster_pipeline.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/nycohm/helpers/combine_geojson.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -247,19 +247,19 @@
       <method v="2" />
     </configuration>
     <list>
-      <item itemvalue="Python.housingdb_post2010" />
+      <item itemvalue="Python.combine_geojson" />
       <item itemvalue="Python.definitions" />
+      <item itemvalue="Python.housingdb_post2010" />
       <item itemvalue="Python.ingest" />
-      <item itemvalue="Python.dagster_pipeline" />
       <item itemvalue="Python.scratch" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.combine_geojson" />
         <item itemvalue="Python.housingdb_post2010" />
         <item itemvalue="Python.scratch" />
         <item itemvalue="Python.definitions" />
         <item itemvalue="Python.ingest" />
-        <item itemvalue="Python.dagster_pipeline" />
       </list>
     </recent_temporary>
   </component>
@@ -283,7 +283,10 @@
       <workItem from="1753978989007" duration="31361000" />
       <workItem from="1754315142223" duration="29350000" />
       <workItem from="1754575425612" duration="53805000" />
-      <workItem from="1756994192779" duration="114953000" />
+      <workItem from="1756994192779" duration="122407000" />
+      <workItem from="1762446000224" duration="3714000" />
+      <workItem from="1762711941740" duration="44295000" />
+      <workItem from="1763331229812" duration="15000" />
     </task>
     <task id="LOCAL-00001" summary="create repo">
       <option name="closed" value="true" />
@@ -589,7 +592,55 @@
       <option name="project" value="LOCAL" />
       <updated>1759779531887</updated>
     </task>
-    <option name="localTasksCounter" value="39" />
+    <task id="LOCAL-00039" summary="Resolve issue with census tract from affordable dataset; add project key to main">
+      <option name="closed" value="true" />
+      <created>1759940428990</created>
+      <option name="number" value="00039" />
+      <option name="presentableId" value="LOCAL-00039" />
+      <option name="project" value="LOCAL" />
+      <updated>1759940428990</updated>
+    </task>
+    <task id="LOCAL-00040" summary="Dev - add placeholder data to resolve issue where districts/tracts with no rows were not displaying on map">
+      <option name="closed" value="true" />
+      <created>1762804562091</created>
+      <option name="number" value="00040" />
+      <option name="presentableId" value="LOCAL-00040" />
+      <option name="project" value="LOCAL" />
+      <updated>1762804562091</updated>
+    </task>
+    <task id="LOCAL-00041" summary="Dev">
+      <option name="closed" value="true" />
+      <created>1762901700456</created>
+      <option name="number" value="00041" />
+      <option name="presentableId" value="LOCAL-00041" />
+      <option name="project" value="LOCAL" />
+      <updated>1762901700456</updated>
+    </task>
+    <task id="LOCAL-00042" summary="Resolve issue with coordinate system">
+      <option name="closed" value="true" />
+      <created>1763049286158</created>
+      <option name="number" value="00042" />
+      <option name="presentableId" value="LOCAL-00042" />
+      <option name="project" value="LOCAL" />
+      <updated>1763049286158</updated>
+    </task>
+    <task id="LOCAL-00043" summary="Dev">
+      <option name="closed" value="true" />
+      <created>1763328395465</created>
+      <option name="number" value="00043" />
+      <option name="presentableId" value="LOCAL-00043" />
+      <option name="project" value="LOCAL" />
+      <updated>1763328395465</updated>
+    </task>
+    <task id="LOCAL-00044" summary="Include districts with no housing production in aggregation">
+      <option name="closed" value="true" />
+      <created>1763328527732</created>
+      <option name="number" value="00044" />
+      <option name="presentableId" value="LOCAL-00044" />
+      <option name="project" value="LOCAL" />
+      <updated>1763328527732</updated>
+    </task>
+    <option name="localTasksCounter" value="45" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -622,11 +673,17 @@
     <MESSAGE value="Aggregate geo districts and join to main" />
     <MESSAGE value="Complete beta version of main OBT data output" />
     <MESSAGE value="Refactor ingest and process assets" />
-    <option name="LAST_COMMIT_MESSAGE" value="Refactor ingest and process assets" />
+    <MESSAGE value="Resolve issue with census tract from affordable dataset; add project key to main" />
+    <MESSAGE value="Dev - add placeholder data to resolve issue where districts/tracts with no rows were not displaying on map" />
+    <MESSAGE value="Resolve issue with coordinate system" />
+    <MESSAGE value="Dev" />
+    <MESSAGE value="Include districts with no housing production in aggregation" />
+    <option name="LAST_COMMIT_MESSAGE" value="Include districts with no housing production in aggregation" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/nycohm$process_keys.coverage" NAME="process_datasets Coverage Results" MODIFIED="1754343903908" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/nycohm/helpers" />
     <SUITE FILE_PATH="coverage/nycohm$bqt2.coverage" NAME="bqt2 Coverage Results" MODIFIED="1754420385408" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/nycohm/helpers" />
+    <SUITE FILE_PATH="coverage/nycohm$combine_geojson.coverage" NAME="combine_geojson Coverage Results" MODIFIED="1762961719977" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/nycohm/helpers" />
     <SUITE FILE_PATH="coverage/nycohm$crosswalk.coverage" NAME="crosswalk Coverage Results" MODIFIED="1753994326321" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/nycohm" />
     <SUITE FILE_PATH="coverage/nycohm$scratch.coverage" NAME="scratch Coverage Results" MODIFIED="1759775957100" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/nycohm" />
     <SUITE FILE_PATH="coverage/nycohm$join.coverage" NAME="join Coverage Results" MODIFIED="1753996752544" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/nycohm" />
