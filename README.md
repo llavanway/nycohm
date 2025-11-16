@@ -3,6 +3,8 @@ The easiest way to keep track of housing production in all of New York City's ne
 
 Access the dashboard: [https://public.tableau.com/app/profile/luke.lavanway5938/viz/NYCOpenHousingMetricsDashboardpre-alphaversion/Sheet1#1](https://public.tableau.com/app/profile/luke.lavanway5938/viz/housingmetrics_nycDashboard/Map)
 
+Questions or issues? Email luke (at) housingmetrics.nyc
+
 ## How to contribute
 
 1. Clone the repo to your local machine.
