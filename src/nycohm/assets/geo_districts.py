@@ -152,13 +152,15 @@ def _aggregate_housing_by_dims(
     a_df = affordable_df.copy()
 
     aggregated = (
-        h_df.groupby(group_cols, as_index=False)["Housing_Units"]
+        # Include rows where grouping columns are null
+        h_df.groupby(group_cols, as_index=False, dropna=False)["Housing_Units"]
         .sum()
         .astype({"Housing_Units": "Int64"})
     )
 
     aggregated_affordable = (
-        a_df.groupby(group_cols, as_index=False)["Housing_Units"]
+        # Include rows where grouping columns are null
+        a_df.groupby(group_cols, as_index=False, dropna=False)["Housing_Units"]
         .sum()
         .rename(columns={"Housing_Units": "Housing_Units_Affordable"})
         .astype({"Housing_Units_Affordable": "Int64"})
