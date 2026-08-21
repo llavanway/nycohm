@@ -1,4 +1,10 @@
-# housingmetrics.nyc
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="brand/logo-dark.svg">
+    <img src="brand/logo.svg" alt="housingmetrics.nyc" height="76">
+  </picture>
+</p>
+
 The easiest way to keep track of housing production in all of New York City's neighborhoods.
 
 Access the dashboard: [https://public.tableau.com/app/profile/luke.lavanway5938/viz/NYCOpenHousingMetricsDashboardpre-alphaversion/Sheet1#1](https://public.tableau.com/app/profile/luke.lavanway5938/viz/housingmetrics_nycDashboard/Map)
