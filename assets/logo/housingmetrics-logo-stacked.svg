@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 336" width="640" height="336" role="img" aria-label="housingmetrics.nyc">
+  <title>housingmetrics.nyc</title>
+  <g transform="translate(238 24) scale(0.32)">
+    <rect width="512" height="512" rx="112" ry="112" fill="#E8E3DD"/>
+    <rect x="224" y="96" width="144" height="320" fill="#A3B2C8"/>
+    <rect x="144" y="288" width="144" height="128" fill="#78879E"/>
+    <rect x="224" y="288" width="64" height="128" fill="#58657A"/>
+  </g>
+  <text x="320" y="256" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif"
+        font-size="64" font-weight="700" letter-spacing="-2" fill="#2E3746">housingmetrics<tspan fill="#78879E">.nyc</tspan></text>
+  <text x="320" y="302" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif"
+        font-size="20" font-weight="500" letter-spacing="3.2" fill="#78879E">HOUSING PRODUCTION, TRACKED</text>
+</svg>

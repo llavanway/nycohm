@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 208" width="1000" height="208" role="img" aria-label="housingmetrics.nyc">
+  <title>housingmetrics.nyc</title>
+  <g transform="translate(24 24) scale(0.3125)">
+    <rect width="512" height="512" rx="112" ry="112" fill="#E8E3DD"/>
+    <rect x="224" y="96" width="144" height="320" fill="#A3B2C8"/>
+    <rect x="144" y="288" width="144" height="128" fill="#78879E"/>
+    <rect x="224" y="288" width="64" height="128" fill="#58657A"/>
+  </g>
+  <text x="216" y="133" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif"
+        font-size="80" font-weight="700" letter-spacing="-2.5" fill="#2E3746">housingmetrics<tspan fill="#78879E">.nyc</tspan></text>
+</svg>

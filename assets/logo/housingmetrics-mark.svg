@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="housingmetrics.nyc">
+  <title>housingmetrics.nyc</title>
+  <!-- warm ground -->
+  <rect width="512" height="512" rx="112" ry="112" fill="#E8E3DD"/>
+  <!-- tall bar (right) -->
+  <rect x="224" y="96" width="144" height="320" fill="#A3B2C8"/>
+  <!-- short bar (left) -->
+  <rect x="144" y="288" width="144" height="128" fill="#78879E"/>
+  <!-- overlap: the two series intersecting -->
+  <rect x="224" y="288" width="64" height="128" fill="#58657A"/>
+</svg>
