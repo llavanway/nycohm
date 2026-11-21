@@ -78,15 +78,28 @@ def affordable_housing_production_by_building_clean(affordable_housing_productio
     # add key for Project level
     df['Project_Key'] = df['Project_ID'].astype(str)
 
-    # infer full Census_Tract
-    df = make_full_census_tract(df, tract_col="Census_Tract", borough_col="Borough")
+    # derive the 2020 census tract GEOID: point-in-polygon on the building's
+    # coordinates, falling back to decoding HPD's tract column where a row has
+    # no coordinates. Rows with neither (e.g. CONFIDENTIAL projects) stay null.
+    df = make_full_census_tract(
+        df,
+        tract_col="Census_Tract",
+        borough_col="Borough",
+        lat_col="Latitude",
+        lon_col="Longitude",
+    )
+    tract_source_counts = (
+        df["Census_Tract_Source"].fillna("unassigned").value_counts().to_dict()
+    )
+    logging.info("Census tract assignment by source: %s", tract_source_counts)
     df["Census_Tract"] = df["Census_Tract_Full"]
-    df.drop('Census_Tract_Full', axis=1, inplace=True)
+    df = df.drop(columns=['Census_Tract_Full', 'Census_Tract_Source'])
 
     # add standardized geographic key column names and correct formats
     df['Council_District'] = df['Council_District'].astype('Int64').astype(str)
     df['Community_District'] = df['Community_District'].astype('Int64').astype(str)
-    df['Census_Tract'] = df['Census_Tract'].astype(str)
+    # nullable string dtype so rows without a tract stay null (not the text '<NA>')
+    df['Census_Tract'] = df['Census_Tract'].astype('string')
     df['BBL'] = df['BBL'].astype('Int64')
 
     # add shared metric columns
@@ -106,6 +119,7 @@ def affordable_housing_production_by_building_clean(affordable_housing_productio
 
     metadata = {
         "rows": len(df),
+        "census_tract_source_counts": tract_source_counts,
         "preview": MetadataValue.md(df.head(10).to_markdown(index=False)),
     }
 

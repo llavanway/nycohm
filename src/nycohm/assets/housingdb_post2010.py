@@ -11,7 +11,7 @@ from src.nycohm.helpers.handle_null import standardize_null_values
 
 configure_logging()
 
-ingest_path = Path(__file__).resolve().parents[3] / 'data/raw_csv/housingdb_post2010.csv'
+ingest_path = Path(__file__).resolve().parents[3] / 'data/raw_csv/HousingDB_post2010.csv'
 
 
 # ingest
