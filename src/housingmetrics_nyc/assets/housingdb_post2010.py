@@ -3,12 +3,12 @@ import pandas as pd
 from datetime import datetime, timezone
 from dagster import asset, Output, MetadataValue, AssetExecutionContext, AssetIn
 import logging
-from src.nycohm.helpers.log_config import configure_logging
-from src.nycohm.helpers.prep_for_bq import sanitize_bq_columns
-from src.nycohm.helpers._read_csv import _read_csv
-from src.nycohm.helpers.handle_null import standardize_null_values
-from src.nycohm.helpers.drop_inactive_jobs import drop_inactive_jobs
-from src.nycohm.fetch_data import ensure_dataset
+from src.housingmetrics_nyc.helpers.log_config import configure_logging
+from src.housingmetrics_nyc.helpers.prep_for_bq import sanitize_bq_columns
+from src.housingmetrics_nyc.helpers._read_csv import _read_csv
+from src.housingmetrics_nyc.helpers.handle_null import standardize_null_values
+from src.housingmetrics_nyc.helpers.drop_inactive_jobs import drop_inactive_jobs
+from src.housingmetrics_nyc.fetch_data import ensure_dataset
 
 configure_logging()
 
@@ -23,7 +23,7 @@ DATASET = 'housing_database_project_level'
     group_name="ingest_csv",
 )
 def housingdb_post2010(context: AssetExecutionContext) -> Output[pd.DataFrame]:
-    # downloaded from NYC Open Data on first use; see src/nycohm/fetch_data.py
+    # downloaded from NYC Open Data on first use; see src/housingmetrics_nyc/fetch_data.py
     df, csv_path = _read_csv(context, ensure_dataset(DATASET))
 
     df["Job_Number"] = (

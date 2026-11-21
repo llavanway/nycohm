@@ -15,8 +15,8 @@ from pathlib import Path
 
 import pandas as pd
 
-from src.nycohm.helpers.combine_geojson import combine_geojson
-from src.nycohm.helpers.drop_inactive_jobs import capture_date_from_version
+from src.housingmetrics_nyc.helpers.combine_geojson import combine_geojson
+from src.housingmetrics_nyc.helpers.drop_inactive_jobs import capture_date_from_version
 
 EXPORT_DIR = Path(__file__).resolve().parents[3] / "data" / "exports"
 MAIN_CSV = "main.csv"

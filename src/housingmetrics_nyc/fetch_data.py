@@ -3,9 +3,9 @@ Download the source datasets that are too large or change too often to commit.
 
 Usage, from the repository root:
 
-    python -m src.nycohm.fetch_data                # download any that are missing
-    python -m src.nycohm.fetch_data --force        # re-download all (data refresh)
-    python -m src.nycohm.fetch_data housing_database_project_level --force
+    python -m src.housingmetrics_nyc.fetch_data                # download any that are missing
+    python -m src.housingmetrics_nyc.fetch_data --force        # re-download all (data refresh)
+    python -m src.housingmetrics_nyc.fetch_data housing_database_project_level --force
 
 Files are written to data/downloads/, which is not tracked by git. The ingest
 assets call ensure_dataset(), so materializing them downloads a missing file

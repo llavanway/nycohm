@@ -2,8 +2,8 @@ import json
 
 import pandas as pd
 
-from src.nycohm.helpers.combine_geojson import combine_geojson
-from src.nycohm.helpers.dashboard_export import (
+from src.housingmetrics_nyc.helpers.combine_geojson import combine_geojson
+from src.housingmetrics_nyc.helpers.dashboard_export import (
     DASHBOARD_COLUMNS,
     affordable_data_as_of,
     build_dashboard_main,

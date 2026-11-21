@@ -1,7 +1,7 @@
 from pathlib import Path
 import pandas as pd
 import logging
-from src.nycohm.helpers.log_config import configure_logging
+from src.housingmetrics_nyc.helpers.log_config import configure_logging
 from dagster import AssetExecutionContext
 
 configure_logging()

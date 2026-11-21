@@ -3,9 +3,9 @@ requires = ["setuptools>=61", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "nycohm"
+name = "housingmetrics.nyc"
 version = "0.1.0"
-description = "NYC Open Housing Metrics package"
+description = "Data pipeline for housingmetrics.nyc"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
@@ -29,7 +29,7 @@ package-dir = {"" = "src"}
 where = ["src"]
 
 [tool.dagster]
-python_file = "src/nycohm/definitions.py"
+python_file = "src/housingmetrics_nyc/definitions.py"
 attribute = "defs"
 
 [tool.pytest.ini_options]

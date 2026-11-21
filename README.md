@@ -17,8 +17,8 @@ The two housing datasets are large and are republished regularly, so they are no
 Materializing the ingest assets downloads any file that is missing. To download them yourself, or to refresh to the latest release, run from the repo root:
 
 ```bash
-python -m src.nycohm.fetch_data          # download any that are missing
-python -m src.nycohm.fetch_data --force  # re-download the latest release
+python -m src.housingmetrics_nyc.fetch_data          # download any that are missing
+python -m src.housingmetrics_nyc.fetch_data --force  # re-download the latest release
 ```
 
 Each download is checked against the row count NYC Open Data reports, and a `.source.json` file is written next to it recording the source URL and download time. After a refresh, re-materialize all assets. The direct CSV link for any dataset is `https://data.cityofnewyork.us/api/views/<ID>/rows.csv?accessType=DOWNLOAD`.

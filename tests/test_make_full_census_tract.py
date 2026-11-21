@@ -2,15 +2,15 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from src.nycohm.fetch_data import dataset_path
-from src.nycohm.helpers.make_full_census_tract import (
+from src.housingmetrics_nyc.fetch_data import dataset_path
+from src.housingmetrics_nyc.helpers.make_full_census_tract import (
     decode_tract_code,
     load_tract_reference,
     make_full_census_tract,
     tracts_from_coordinates,
 )
 
-# not stored in the repo; download with `python -m src.nycohm.fetch_data`
+# not stored in the repo; download with `python -m src.housingmetrics_nyc.fetch_data`
 AFFORDABLE_CSV = dataset_path("affordable_housing_production_by_building")
 
 BRONX, MANHATTAN, BROOKLYN, QUEENS = "005", "061", "047", "081"
@@ -196,7 +196,7 @@ def test_make_full_census_tract_rows_without_any_tract_info_stay_null(reference)
 @pytest.fixture(scope="module")
 def affordable_raw():
     if not AFFORDABLE_CSV.exists():
-        pytest.skip(f"{AFFORDABLE_CSV.name} not downloaded; run python -m src.nycohm.fetch_data")
+        pytest.skip(f"{AFFORDABLE_CSV.name} not downloaded; run python -m src.housingmetrics_nyc.fetch_data")
     return pd.read_csv(AFFORDABLE_CSV)
 
 
@@ -227,10 +227,10 @@ def test_affordable_dataset_tracts_are_all_valid_2020_geoids(affordable_raw, ref
 
 def test_affordable_clean_asset_census_tract(affordable_raw, reference):
     pytest.importorskip("dagster")
-    from src.nycohm.assets.affordable_housing_production_by_building import (
+    from src.housingmetrics_nyc.assets.affordable_housing_production_by_building import (
         affordable_housing_production_by_building_clean,
     )
-    from src.nycohm.helpers.prep_for_bq import sanitize_bq_columns
+    from src.housingmetrics_nyc.helpers.prep_for_bq import sanitize_bq_columns
 
     ingested, _ = sanitize_bq_columns(affordable_raw.copy(), lowercase=False)
     df = affordable_housing_production_by_building_clean(ingested).value

@@ -1,8 +1,8 @@
 import pandas as pd
 from dagster import asset, Output, MetadataValue, AssetExecutionContext, AssetIn
 import logging
-from src.nycohm.helpers.log_config import configure_logging
-from src.nycohm.helpers.district_labels import add_district_labels
+from src.housingmetrics_nyc.helpers.log_config import configure_logging
+from src.housingmetrics_nyc.helpers.district_labels import add_district_labels
 
 configure_logging()
 

@@ -14,16 +14,16 @@ dagster dev
 
 import os
 from dagster import Definitions
-from src.nycohm.assets.geo_districts import assets_geo_districts
-from src.nycohm.assets.main import assets_main
-from src.nycohm.assets.housingdb_post2010 import assets_housingdb_post2010
-from src.nycohm.assets.affordable_housing_production_by_building import assets_affordable_housing_production_by_building
-from src.nycohm.assets.crosswalk_census_tract_to_cc import assets_crosswalk_census_tract_to_cc
-from src.nycohm.assets.new_york_36_transit_census_tract import assets_new_york_36_transit_census_tract
-from src.nycohm.assets.population_census_tract import assets_population_census_tract
-from src.nycohm.assets.crosswalk_census_tract_to_cd import assets_crosswalk_census_tract_to_cd
-from src.nycohm.assets.district_labels import assets_district_labels
-from src.nycohm.assets.dashboard_export import assets_dashboard_export
+from src.housingmetrics_nyc.assets.geo_districts import assets_geo_districts
+from src.housingmetrics_nyc.assets.main import assets_main
+from src.housingmetrics_nyc.assets.housingdb_post2010 import assets_housingdb_post2010
+from src.housingmetrics_nyc.assets.affordable_housing_production_by_building import assets_affordable_housing_production_by_building
+from src.housingmetrics_nyc.assets.crosswalk_census_tract_to_cc import assets_crosswalk_census_tract_to_cc
+from src.housingmetrics_nyc.assets.new_york_36_transit_census_tract import assets_new_york_36_transit_census_tract
+from src.housingmetrics_nyc.assets.population_census_tract import assets_population_census_tract
+from src.housingmetrics_nyc.assets.crosswalk_census_tract_to_cd import assets_crosswalk_census_tract_to_cd
+from src.housingmetrics_nyc.assets.district_labels import assets_district_labels
+from src.housingmetrics_nyc.assets.dashboard_export import assets_dashboard_export
 from .resources import DuckDBResource, BigQueryResource
 
 # set this variable to "bigquery" for prod or "duckdb" for local dev

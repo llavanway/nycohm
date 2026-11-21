@@ -1,12 +1,12 @@
 import pandas as pd
 from dagster import asset, Output, MetadataValue, AssetIn
 
-from src.nycohm.fetch_data import dataset_source_info
-from src.nycohm.helpers.dashboard_export import (
+from src.housingmetrics_nyc.fetch_data import dataset_source_info
+from src.housingmetrics_nyc.helpers.dashboard_export import (
     build_dashboard_main,
     write_dashboard_files,
 )
-from src.nycohm.helpers.log_config import configure_logging
+from src.housingmetrics_nyc.helpers.log_config import configure_logging
 
 configure_logging()
 

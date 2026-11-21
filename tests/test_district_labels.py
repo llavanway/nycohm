@@ -3,7 +3,7 @@ from pathlib import Path
 import pandas as pd
 import pytest
 
-from src.nycohm.helpers.district_labels import (
+from src.housingmetrics_nyc.helpers.district_labels import (
     UNASSIGNED_LABEL,
     add_district_labels,
     build_district_labels,

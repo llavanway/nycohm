@@ -14,7 +14,7 @@ The file names never change, so a refresh does not involve renaming or re-linkin
 1. Download the latest source data:
 
    ```bash
-   python -m src.nycohm.fetch_data --force
+   python -m src.housingmetrics_nyc.fetch_data --force
    ```
 
 2. Re-materialize all assets (`dagster dev`, then "Materialize all"). The `dashboard_main` asset writes both files to `data/exports/`.
@@ -35,7 +35,7 @@ After that, step 4 above is all a refresh needs.
 
 ## What the workbook expects
 
-`DASHBOARD_COLUMNS` in `src/nycohm/helpers/dashboard_export.py` lists the columns of `main.csv`, in order, with their types. The workbook refers to these names. Add new columns at the end; rename or remove one only together with the workbook.
+`DASHBOARD_COLUMNS` in `src/housingmetrics_nyc/helpers/dashboard_export.py` lists the columns of `main.csv`, in order, with their types. The workbook refers to these names. Add new columns at the end; rename or remove one only together with the workbook.
 
 Columns the dashboard relies on beyond the housing counts:
 

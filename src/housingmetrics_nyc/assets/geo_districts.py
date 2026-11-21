@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 from dagster import AssetIn, MetadataValue, Output, asset
 
-from src.nycohm.helpers.log_config import configure_logging
+from src.housingmetrics_nyc.helpers.log_config import configure_logging
 
 configure_logging()
 
