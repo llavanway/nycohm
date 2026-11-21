@@ -22,6 +22,8 @@ from src.nycohm.assets.crosswalk_census_tract_to_cc import assets_crosswalk_cens
 from src.nycohm.assets.new_york_36_transit_census_tract import assets_new_york_36_transit_census_tract
 from src.nycohm.assets.population_census_tract import assets_population_census_tract
 from src.nycohm.assets.crosswalk_census_tract_to_cd import assets_crosswalk_census_tract_to_cd
+from src.nycohm.assets.district_labels import assets_district_labels
+from src.nycohm.assets.dashboard_export import assets_dashboard_export
 from .resources import DuckDBResource, BigQueryResource
 
 # set this variable to "bigquery" for prod or "duckdb" for local dev
@@ -64,7 +66,9 @@ defs = Definitions(
            assets_population_census_tract +
            assets_crosswalk_census_tract_to_cd +
            assets_geo_districts +
-           assets_main
+           assets_district_labels +
+           assets_main +
+           assets_dashboard_export
            ,
     resources={
         "db": db_resource,                          # used for READS

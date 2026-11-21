@@ -25,10 +25,14 @@ Each download is checked against the row count NYC Open Data reports, and a `.so
 
 The smaller reference files (crosswalks, boundaries, census population, transit access) are static and remain in `data/`. All sources are listed in [docs/web_sources.md](docs/web_sources.md).
 
+## Updating the dashboard
+
+Materializing the `dashboard_main` asset writes the two files the Tableau workbook reads, `data/exports/main.csv` and `data/exports/nyc_combined.geojson` (ignored by git). The workbook itself is in `dashboard/`. The steps for refreshing and republishing it are in [docs/dashboard_refresh.md](docs/dashboard_refresh.md).
+
 ## How to contribute
 
 1. Clone the repo to your local machine.
 2. Install dependencies.
-3. Set up your dev database. definitions.py sets the BACKEND variable to 'duckdb' by default, which points Dagster to a DuckDB instance created on your machine. Run dagster dev from the terminal, then use the graphical webserver interface to materialize all assets. This creates a DuckDB instance on your machine where you can query all project assets.
+3. Set up your dev database. definitions.py sets the BACKEND variable to 'duckdb' by default, which points Dagster to a DuckDB instance created on your machine. Run dagster dev from the terminal, then use the graphical webserver interface to materialize all assets. This creates a DuckDB instance on your machine where you can query all project assets. If a change adds or removes columns from an asset, delete `dev.duckdb` first.
 4. Make your changes and submit a pull request. If you are adding a data source, provide instructions on how to access the data source in the PR.
-5. For dashboard changes, clone the dashboard and send in the updated Tableau workbook.
+5. For dashboard changes, edit `dashboard/housingmetrics.nyc Dashboard.twbx` in Tableau Desktop and include the updated workbook in your pull request.

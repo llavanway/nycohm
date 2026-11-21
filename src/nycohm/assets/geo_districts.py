@@ -123,6 +123,17 @@ def _add_percentiles_and_grades(df: pd.DataFrame) -> pd.DataFrame:
         bins=5,
         labels=["F", "D", "C", "B", "A"],
     )
+
+    # 1 = most units among districts of this type; ties share the better rank
+    df["Rank_Total_Housing_Units"] = (
+        df["Total_Housing_Units"].rank(method="min", ascending=False).astype("Int64")
+    )
+    df["Rank_Total_Affordable_Housing_Units"] = (
+        df["Total_Affordable_Housing_Units"]
+        .rank(method="min", ascending=False)
+        .astype("Int64")
+    )
+    df["District_Count"] = len(df)
     return df
 
 

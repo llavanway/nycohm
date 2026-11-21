@@ -1,48 +1,72 @@
+"""Combine the district boundary files into the single GeoJSON the dashboard maps.
+
+Each feature keeps two properties, district_type and district_id, which the
+dashboard joins to District_Type and District_Value in the main table.
+"""
+
+from __future__ import annotations
+
+import json
 from pathlib import Path
-from src.nycohm.helpers.log_config import configure_logging
-import pandas as pd
-import geopandas as gpd
 
-configure_logging()
+import numpy as np
 
-upper_path = Path(__file__).resolve().parents[3] / 'data/geojson/'
+GEOJSON_DIR = Path(__file__).resolve().parents[3] / "data" / "geojson"
+
+# (file, district_type, property holding the district ID)
+DISTRICT_BOUNDARIES = [
+    (GEOJSON_DIR / "nycc.geojson", "Council_District", "CounDist"),
+    (GEOJSON_DIR / "nycd.geojson", "Community_District", "BoroCD"),
+    (GEOJSON_DIR / "nyct2020.geojson", "Census_Tract", "GEOID"),
+]
+
+TARGET_CRS = "EPSG:4326"  # WGS84 longitude/latitude, which GeoJSON and Tableau expect
+COORDINATE_DECIMALS = 7  # about 1 cm
 
 
-def combine_geojson(geojson_specs, output_path):
+def combine_geojson(output_path, boundaries=DISTRICT_BOUNDARIES) -> dict:
     """
-       Combine multiple district-level GeoJSONs for Tableau.
+    Write one WGS84 GeoJSON holding every district boundary.
 
-       Parameters
-       ----------
-       geojson_specs : list of tuples
-           Each tuple = (file_path, district_type_label, id_column_name)
-       """
-    gdfs = []
-    target_crs = "EPSG:4326"
+    Returns the number of features written per district type.
+    """
+    import shapely
+    from pyproj import Transformer
+    from shapely.geometry import mapping, shape
 
-    for file_path, district_type, id_col in geojson_specs:
-        gdf = gpd.read_file(file_path)
-        if gdf.crs is None:
-            gdf = gdf.set_crs(target_crs)
-        elif str(gdf.crs).upper() != target_crs:
-            gdf = gdf.to_crs(target_crs)
-        gdf["district_type"] = district_type
-        gdf["district_id"] = gdf[id_col].astype(str)
-        gdfs.append(gdf[["district_type", "district_id", "geometry"]])
+    features = []
+    counts = {}
+    for file_path, district_type, id_property in boundaries:
+        with open(file_path) as f:
+            collection = json.load(f)
 
-    combined = pd.concat(gdfs, ignore_index=True)
-    combined = gpd.GeoDataFrame(combined, geometry="geometry", crs=target_crs)
+        # GeoJSON is WGS84 unless it says otherwise; the DCP files declare
+        # EPSG:2263 (NY State Plane Long Island, US feet)
+        source_crs = (
+            collection.get("crs", {}).get("properties", {}).get("name") or TARGET_CRS
+        )
+        transformer = Transformer.from_crs(source_crs, TARGET_CRS, always_xy=True)
+
+        def to_wgs84(coords, transformer=transformer):
+            lon, lat = transformer.transform(coords[:, 0], coords[:, 1])
+            return np.round(np.column_stack([lon, lat]), COORDINATE_DECIMALS)
+
+        for feature in collection["features"]:
+            geometry = shapely.transform(shape(feature["geometry"]), to_wgs84)
+            features.append(
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "district_type": district_type,
+                        "district_id": str(feature["properties"][id_property]),
+                    },
+                    "geometry": mapping(geometry),
+                }
+            )
+        counts[district_type] = len(collection["features"])
 
     output_path = Path(output_path)
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    combined.to_file(output_path, driver="GeoJSON")
-    return output_path
-
-combine_geojson(
-    [
-        (upper_path / "nycc.geojson", "Council_District", "CounDist"),
-        (upper_path / "nycd.geojson", "Community_District", "BoroCD"),
-        (upper_path / "nyct2020.geojson", "Census_Tract", "GEOID")
-    ],
-    upper_path / "nyc_combined.geojson"
-)
+    with open(output_path, "w") as f:
+        json.dump({"type": "FeatureCollection", "features": features}, f)
+    return counts

@@ -5,3 +5,6 @@ __pycache__/
 
 # source datasets downloaded by src/nycohm/fetch_data.py
 data/downloads/
+
+# dashboard files written by the dashboard_main asset
+data/exports/

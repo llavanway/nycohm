@@ -2,8 +2,7 @@ import pandas as pd
 from dagster import asset, Output, MetadataValue, AssetExecutionContext, AssetIn
 import logging
 from src.nycohm.helpers.log_config import configure_logging
-from itertools import product
-from math import prod
+from src.nycohm.helpers.district_labels import add_district_labels
 
 configure_logging()
 
@@ -16,6 +15,7 @@ configure_logging()
     "agg_council_district": AssetIn(key=["agg_council_district"]),
     "agg_community_district": AssetIn(key=["agg_community_district"]),
     "agg_census_tract": AssetIn(key=["agg_census_tract"]),
+    "district_labels": AssetIn(key=["district_labels"]),
      },
     name="main",
     io_manager_key="warehouse_io_manager",
@@ -23,7 +23,8 @@ configure_logging()
     group_name="main",
 )
 def main(agg_housing_metrics_cc,agg_housing_metrics_cd, agg_housing_metrics_ct,
-         agg_council_district, agg_community_district, agg_census_tract) -> Output[pd.DataFrame]:
+         agg_council_district, agg_community_district, agg_census_tract,
+         district_labels) -> Output[pd.DataFrame]:
 
     # council district
     df_cc = agg_housing_metrics_cc
@@ -64,6 +65,9 @@ def main(agg_housing_metrics_cc,agg_housing_metrics_cd, agg_housing_metrics_ct,
 
     # convert geo key types
     df['District_Value'] = df['District_Value'].astype(str)
+
+    # readable district names for the dashboard
+    df = add_district_labels(df, district_labels)
 
     # column order
     district_type_column = df.pop('District_Type')
