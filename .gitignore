@@ -1,4 +1,7 @@
 __pycache__/
+*.pyc
+.pytest_cache/
+*.duckdb
 
 # source datasets downloaded by src/nycohm/fetch_data.py
 data/downloads/

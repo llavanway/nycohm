@@ -15,7 +15,12 @@ dependencies = [
     "dagster-shared==1.11.5",
     "pandas",
     "google-cloud-bigquery",
+    "shapely>=2.0",
+    "pyproj",
 ]
+
+[project.optional-dependencies]
+dev = ["pytest"]
 
 [tool.setuptools]
 package-dir = {"" = "src"}
@@ -26,3 +31,7 @@ where = ["src"]
 [tool.dagster]
 python_file = "src/nycohm/definitions.py"
 attribute = "defs"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
