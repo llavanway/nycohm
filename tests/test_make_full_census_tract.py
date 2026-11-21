@@ -1,9 +1,8 @@
-from pathlib import Path
-
 import numpy as np
 import pandas as pd
 import pytest
 
+from src.nycohm.fetch_data import dataset_path
 from src.nycohm.helpers.make_full_census_tract import (
     decode_tract_code,
     load_tract_reference,
@@ -11,10 +10,8 @@ from src.nycohm.helpers.make_full_census_tract import (
     tracts_from_coordinates,
 )
 
-REPO_ROOT = Path(__file__).resolve().parents[1]
-AFFORDABLE_CSV = (
-    REPO_ROOT / "data/raw_csv/Affordable_Housing_Production_by_Building_20251001.csv"
-)
+# not stored in the repo; download with `python -m src.nycohm.fetch_data`
+AFFORDABLE_CSV = dataset_path("affordable_housing_production_by_building")
 
 BRONX, MANHATTAN, BROOKLYN, QUEENS = "005", "061", "047", "081"
 
@@ -198,6 +195,8 @@ def test_make_full_census_tract_rows_without_any_tract_info_stay_null(reference)
 
 @pytest.fixture(scope="module")
 def affordable_raw():
+    if not AFFORDABLE_CSV.exists():
+        pytest.skip(f"{AFFORDABLE_CSV.name} not downloaded; run python -m src.nycohm.fetch_data")
     return pd.read_csv(AFFORDABLE_CSV)
 
 

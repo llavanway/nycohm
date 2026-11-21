@@ -1,5 +1,4 @@
 import os
-from pathlib import Path
 import pandas as pd
 from datetime import datetime, timezone
 from dagster import asset, Output, MetadataValue, AssetExecutionContext, AssetIn
@@ -8,10 +7,12 @@ from src.nycohm.helpers.log_config import configure_logging
 from src.nycohm.helpers.prep_for_bq import sanitize_bq_columns
 from src.nycohm.helpers._read_csv import _read_csv
 from src.nycohm.helpers.handle_null import standardize_null_values
+from src.nycohm.helpers.drop_inactive_jobs import drop_inactive_jobs
+from src.nycohm.fetch_data import ensure_dataset
 
 configure_logging()
 
-ingest_path = Path(__file__).resolve().parents[3] / 'data/raw_csv/HousingDB_post2010.csv'
+DATASET = 'housing_database_project_level'
 
 
 # ingest
@@ -22,7 +23,8 @@ ingest_path = Path(__file__).resolve().parents[3] / 'data/raw_csv/HousingDB_post
     group_name="ingest_csv",
 )
 def housingdb_post2010(context: AssetExecutionContext) -> Output[pd.DataFrame]:
-    df, csv_path = _read_csv(context, ingest_path)
+    # downloaded from NYC Open Data on first use; see src/nycohm/fetch_data.py
+    df, csv_path = _read_csv(context, ensure_dataset(DATASET))
 
     df["Job_Number"] = (
         df["Job_Number"]
@@ -42,7 +44,7 @@ def housingdb_post2010(context: AssetExecutionContext) -> Output[pd.DataFrame]:
         "preview": MetadataValue.md(df.head(10).to_markdown(index=False)),
         "table": 'housingdb_post2010',
         "source_owner": "NYC DCP",
-        "notes": "Post-2010 housing permits/records.",
+        "notes": "Post-2010 housing permits/records. NYC Open Data export; includes inactive jobs.",
     }
     return Output(df, metadata=metadata)
 
@@ -58,6 +60,9 @@ def housingdb_post2010(context: AssetExecutionContext) -> Output[pd.DataFrame]:
 def housingdb_post2010_clean(housingdb_post2010) -> Output[pd.DataFrame]:
     df = housingdb_post2010
     df = standardize_null_values(df)
+
+    # the Open Data export includes withdrawn, stalled and duplicate jobs
+    df = drop_inactive_jobs(df)
 
     # drop nulls
     df = df.dropna(subset=['CommntyDst'])

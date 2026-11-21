@@ -1,5 +1,4 @@
 import os
-from pathlib import Path
 import pandas as pd
 from datetime import datetime, timezone
 from dagster import asset, Output, MetadataValue, AssetExecutionContext, AssetIn
@@ -9,10 +8,11 @@ from src.nycohm.helpers.prep_for_bq import sanitize_bq_columns
 from src.nycohm.helpers._read_csv import _read_csv
 from src.nycohm.helpers.handle_null import standardize_null_values
 from src.nycohm.helpers.make_full_census_tract import make_full_census_tract
+from src.nycohm.fetch_data import ensure_dataset
 
 configure_logging()
 
-ingest_path = Path(__file__).resolve().parents[3] / 'data/raw_csv/Affordable_Housing_Production_by_Building_20251001.csv'
+DATASET = 'affordable_housing_production_by_building'
 
 # ingest
 @asset(
@@ -22,7 +22,8 @@ ingest_path = Path(__file__).resolve().parents[3] / 'data/raw_csv/Affordable_Hou
     group_name="ingest_csv",
 )
 def affordable_housing_production_by_building(context: AssetExecutionContext) -> Output[pd.DataFrame]:
-    df, csv_path = _read_csv(context, ingest_path)
+    # downloaded from NYC Open Data on first use; see src/nycohm/fetch_data.py
+    df, csv_path = _read_csv(context, ensure_dataset(DATASET))
 
     df, col_map = sanitize_bq_columns(df, lowercase=False)
     context.log.info(f"Renamed columns for BigQuery: {col_map}")
@@ -38,7 +39,7 @@ def affordable_housing_production_by_building(context: AssetExecutionContext) ->
         "preview": MetadataValue.md(df.head(10).to_markdown(index=False)),
         "table": 'affordable_housing_production_by_building',
         "source_owner": "NYC Open Data",
-        "notes": "Building-level affordable housing production snapshot as of 2025-07-31.",
+        "notes": "Building-level affordable housing production. NYC Open Data export.",
     }
     return Output(df, metadata=metadata)
 
