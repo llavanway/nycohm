@@ -1,0 +1,4 @@
+__pycache__/
+
+# source datasets downloaded by src/nycohm/fetch_data.py
+data/downloads/
