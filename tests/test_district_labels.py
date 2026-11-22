@@ -4,11 +4,12 @@ import pandas as pd
 import pytest
 
 from src.housingmetrics_nyc.helpers.district_labels import (
-    PLACEHOLDER_COMBINATIONS,
+    UNIT_TYPES,
     UNASSIGNED_LABEL,
     add_district_labels,
     build_district_labels,
     placeholder_rows,
+    placeholder_years,
 )
 
 DATA = Path(__file__).resolve().parents[1] / "data"
@@ -118,20 +119,56 @@ def test_add_district_labels_fallbacks(districts):
     assert out["Housing_Units"].tolist() == [1, 2, 3, 4]
 
 
+START_YEARS = [1998, 2000, 2009, 2010, 2011, 2012]
+COMPLETION_YEARS = [2010, 2011, 2012, 2013]
+
+
+def test_placeholder_years_cover_every_year_of_both_filters():
+    years = placeholder_years(START_YEARS, COMPLETION_YEARS)
+    delivered = years[years["Delivery_Status"] == "Delivered"]
+    in_progress = years[years["Delivery_Status"] == "In Progress"]
+
+    # filtering to any one start year, or any one completion year, leaves a row
+    assert set(delivered["Project_Start_Year"]) == set(START_YEARS)
+    assert set(delivered["Project_Completion_Year"]) == set(COMPLETION_YEARS)
+    assert set(in_progress["Project_Start_Year"]) == set(START_YEARS)
+    assert in_progress["Project_Completion_Year"].isna().all()
+
+    # no impossible rows, and no years the data does not already have
+    assert (delivered["Project_Start_Year"] <= delivered["Project_Completion_Year"]).all()
+    pairs = set(zip(delivered["Project_Start_Year"], delivered["Project_Completion_Year"]))
+    assert (1998, 2010) in pairs and (2011, 2011) in pairs
+    assert (2012, 2013) in pairs  # 2013 has no matching start year, so it pairs with the latest one
+    assert not years.duplicated().any()
+
+
+def test_placeholder_years_without_any_years():
+    years = placeholder_years([], [])
+    assert years["Delivery_Status"].tolist() == ["Delivered", "In Progress"]
+    assert years["Project_Start_Year"].isna().all() and years["Project_Completion_Year"].isna().all()
+
+
 def test_placeholder_rows_cover_residential_districts_only(districts):
-    rows = placeholder_rows(districts)
+    rows = placeholder_rows(districts, START_YEARS, COMPLETION_YEARS)
     residential = districts[districts["Residential"]]
-    assert len(rows) == len(residential) * len(PLACEHOLDER_COMBINATIONS)
+    per_district = len(placeholder_years(START_YEARS, COMPLETION_YEARS)) * len(UNIT_TYPES)
+    assert len(rows) == len(residential) * per_district
     assert (rows["Housing_Units"] == 0).all() and (rows["Housing_Units_Affordable"] == 0).all()
     assert (rows["Is_Placeholder"] == 1).all()
-    assert rows["Project_Start_Year"].isna().all() and rows["Project_Completion_Year"].isna().all()
+    assert rows["Project_Start_Year"].notna().all()
 
     keys = set(zip(rows["District_Type"], rows["District_Value"]))
     assert ("Community_District", "164") not in keys  # Central Park stays blank
     assert ("Council_District", "3") in keys
 
     one = rows[(rows["District_Type"] == "Census_Tract") & (rows["District_Value"] == "36047055500")]
-    assert sorted(zip(one["Delivery_Status"], one["Unit_Type"])) == sorted(PLACEHOLDER_COMBINATIONS)
+    assert len(one) == per_district
+    assert set(one["Unit_Type"]) == set(UNIT_TYPES)
+    # every district is still there after filtering to a single year
+    for unit_type in UNIT_TYPES:
+        delivered = one[(one["Unit_Type"] == unit_type) & (one["Delivery_Status"] == "Delivered")]
+        assert set(delivered["Project_Completion_Year"]) == set(COMPLETION_YEARS)
+        assert set(delivered["Project_Start_Year"]) == set(START_YEARS)
     assert set(one["Borough"]) == {"Brooklyn"}
     assert rows.loc[rows["District_Type"] == "Community_District", "Borough"].notna().all()
     assert rows.loc[rows["District_Type"] == "Council_District", "Borough"].isna().all()

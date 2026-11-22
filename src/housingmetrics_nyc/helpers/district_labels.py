@@ -232,11 +232,7 @@ _COUNTY_BOROUGH = {
     "085": "Staten Island",
 }
 _BOROUGH_BY_CODE = {str(code): name for code, name in _CDTA_BOROUGH.values()}
-PLACEHOLDER_COMBINATIONS = [
-    (status, unit_type)
-    for status in ("Delivered", "In Progress")
-    for unit_type in ("New Units", "Preserved Units")
-]
+UNIT_TYPES = ["New Units", "Preserved Units"]
 
 
 def _district_borough(district_type: str, district_value: str):
@@ -247,25 +243,74 @@ def _district_borough(district_type: str, district_value: str):
     return pd.NA  # council districts can cross borough lines
 
 
-def placeholder_rows(districts: pd.DataFrame) -> pd.DataFrame:
+def placeholder_years(start_years, completion_years) -> pd.DataFrame:
     """
-    Zero-unit rows for every residential district, one per delivery status and
-    unit type.
+    The (Delivery_Status, Project_Start_Year, Project_Completion_Year)
+    combinations that zero-unit rows are written for.
 
-    The dashboard only draws a district that has rows for the metric being
-    shown, so a district that produced nothing would otherwise be missing from
-    the map instead of showing as zero. Non-residential areas get no rows and
-    stay blank. Is_Placeholder marks these rows so that charts where a zero row
-    would add an empty year or borough can leave them out.
+    The dashboard has a start-year filter and a completion-year filter, and a
+    zero row only survives a filter if it carries a selected year. So there is
+    a completed row for every start year and for every completion year in the
+    data, and an in-progress row (no completion year) for every start year.
+    Only years already in the data are used, so the filters gain no new choices.
+
+    This keeps a district on the map whenever one year filter is used. It is
+    not every start/completion pair, which would be about seven times as many
+    rows: with both filters set to ranges that share no year, a district with
+    no activity can still drop out.
+    """
+    starts = sorted({int(y) for y in start_years if pd.notna(y)})
+    completions = sorted({int(y) for y in completion_years if pd.notna(y)})
+    if not starts or not completions:
+        # nothing to align with: fall back to rows with no year at all
+        return pd.DataFrame(
+            {
+                "Delivery_Status": ["Delivered", "In Progress"],
+                "Project_Start_Year": pd.array([pd.NA, pd.NA], dtype="Int64"),
+                "Project_Completion_Year": pd.array([pd.NA, pd.NA], dtype="Int64"),
+            }
+        )
+
+    delivered = set()
+    for start in starts:
+        # a project cannot complete before it starts, or before the data begins
+        later = [c for c in completions if c >= start]
+        delivered.add((start, later[0] if later else completions[-1]))
+    for completion in completions:
+        earlier = [s for s in starts if s <= completion]
+        delivered.add((earlier[-1] if earlier else starts[0], completion))
+
+    rows = [("Delivered", start, completion) for start, completion in sorted(delivered)]
+    rows += [("In Progress", start, pd.NA) for start in starts]
+    years = pd.DataFrame(
+        rows, columns=["Delivery_Status", "Project_Start_Year", "Project_Completion_Year"]
+    )
+    years["Project_Start_Year"] = years["Project_Start_Year"].astype("Int64")
+    years["Project_Completion_Year"] = years["Project_Completion_Year"].astype("Int64")
+    return years
+
+
+def placeholder_rows(districts: pd.DataFrame, start_years=(), completion_years=()) -> pd.DataFrame:
+    """
+    Zero-unit rows for every residential district: one per unit type for each
+    combination from placeholder_years().
+
+    The dashboard only draws a district that has rows for the metric and years
+    being shown, so a district that produced nothing would otherwise be missing
+    from the map instead of showing as zero. Non-residential areas get no rows
+    and stay blank. Is_Placeholder marks these rows so that charts where a zero
+    row would mislead (a trend line, a borough total) can leave them out.
     """
     residential = districts.loc[districts["Residential"], ["District_Type", "District_Value"]]
-    combos = pd.DataFrame(PLACEHOLDER_COMBINATIONS, columns=["Delivery_Status", "Unit_Type"])
+    combos = placeholder_years(start_years, completion_years).merge(
+        pd.DataFrame({"Unit_Type": UNIT_TYPES}), how="cross"
+    )
     rows = residential.merge(combos, how="cross")
-    rows["Project_Start_Year"] = pd.array([pd.NA] * len(rows), dtype="Int64")
-    rows["Project_Completion_Year"] = pd.array([pd.NA] * len(rows), dtype="Int64")
-    rows["Borough"] = [
-        _district_borough(t, v) for t, v in zip(rows["District_Type"], rows["District_Value"])
-    ]
+    boroughs = {
+        key: _district_borough(*key)
+        for key in zip(residential["District_Type"], residential["District_Value"])
+    }
+    rows["Borough"] = [boroughs[key] for key in zip(rows["District_Type"], rows["District_Value"])]
     rows["Housing_Units"] = pd.array([0] * len(rows), dtype="Int64")
     rows["Housing_Units_Affordable"] = pd.array([0] * len(rows), dtype="Int64")
     rows["Is_Placeholder"] = 1

@@ -39,7 +39,12 @@ def main(agg_housing_metrics_cc,agg_housing_metrics_cd, agg_housing_metrics_ct,
 
     # every residential district gets zero-unit rows, so one that produced
     # nothing still appears on the dashboard instead of going missing
-    placeholders = placeholder_rows(district_labels)
+    # (one per year in the data, so the dashboard's year filters keep them too)
+    placeholders = placeholder_rows(
+        district_labels,
+        start_years=agg_housing_metrics_cc['Project_Start_Year'].dropna().unique(),
+        completion_years=agg_housing_metrics_cc['Project_Completion_Year'].dropna().unique(),
+    )
     logging.info('placeholder rows: {}'.format(len(placeholders)))
 
     # council district

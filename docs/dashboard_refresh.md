@@ -52,9 +52,16 @@ Columns the dashboard relies on beyond the housing counts:
 
 ### Districts with no housing activity
 
-The map only draws a district that has rows for the metric being shown. So that a district which produced nothing shows as zero instead of going missing, every residential district gets four zero-unit rows (completed and in progress, new and preserved), marked `Is_Placeholder = 1`. Parks, airports, cemeteries and tracts with no residents get none and stay blank.
+The map only draws a district that has rows for the metric and years being shown. So that a district which produced nothing shows as zero instead of going missing, every residential district gets zero-unit rows, marked `Is_Placeholder = 1`. Parks, airports, cemeteries and tracts with no residents get none and stay blank.
 
-These rows have no start or completion year. They appear under "Null" in the year filters; unchecking "Null" hides the districts with no activity again.
+The dashboard has a start-year filter and a completion-year filter, and a zero row only survives a filter if it carries a selected year. Each residential district therefore gets, for both new and preserved units:
+
+- a completed row for every start year and every completion year in the data
+- an in-progress row for every start year
+
+That keeps every district on the map when either year filter is used. It is not every start/completion pair, which would make the file about five times larger. If both filters are set to ranges that share no year (started 2015 to 2018 and completed 2020 to 2024, say), districts with no activity in that window still drop out.
+
+These rows roughly triple the row count of `main.csv`. The trend charts, and Explore Data when comparing by year, borough or city, leave them out.
 
 ### Council Members
 
