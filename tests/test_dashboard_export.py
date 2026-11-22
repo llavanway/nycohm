@@ -5,7 +5,7 @@ import pandas as pd
 from src.housingmetrics_nyc.helpers.combine_geojson import combine_geojson
 from src.housingmetrics_nyc.helpers.dashboard_export import (
     DASHBOARD_COLUMNS,
-    affordable_data_as_of,
+    source_data_as_of,
     build_dashboard_main,
     housing_data_as_of,
 )
@@ -24,7 +24,10 @@ def _main_row(**overrides):
         Housing_Units=120,
         Pctl_Weighted_Transit=86,
         Grade_Housing_Production="B",
-        District_Label="Council District 33",
+        District_Label="Council District 33 (Lincoln Restler)",
+        Council_Member="Lincoln Restler",
+        Neighborhoods="Greenpoint, Williamsburg",
+        Is_Placeholder=0,
         Rank_Total_Housing_Units=1,
         Rank_Total_Affordable_Housing_Units=14,
         District_Count=51,
@@ -36,34 +39,44 @@ def _main_row(**overrides):
 def test_data_dates():
     assert housing_data_as_of("26Q2.1") == "June 30, 2026"
     assert housing_data_as_of("24Q4") == "December 31, 2024"
-    assert affordable_data_as_of({"data_updated_at": "2026-09-30T19:21:51+00:00"}) == "September 30, 2026"
+    assert source_data_as_of({"data_updated_at": "2026-09-30T19:21:51+00:00"}) == "September 30, 2026"
     # older downloads only recorded when they were fetched
-    assert affordable_data_as_of({"downloaded_at": "2026-11-02T08:00:00+00:00"}) == "November 2, 2026"
-    assert affordable_data_as_of({}) == "Unknown"
+    assert source_data_as_of({"downloaded_at": "2026-11-02T08:00:00+00:00"}) == "November 2, 2026"
+    assert source_data_as_of({}) == "Unknown"
 
 
 def test_dashboard_main_follows_the_contract():
     main = pd.DataFrame([_main_row(), _main_row(Project_Completion_Year=None, Housing_Units=None)])
     # pipeline columns arrive in a different order, with extras and categoricals
-    main = main.drop(columns=["Housing_Data_Version", "Housing_Data_As_Of", "Affordable_Data_As_Of"])
+    main = main.drop(
+        columns=["Housing_Data_Version", "Housing_Data_As_Of", "Affordable_Data_As_Of", "Council_Members_As_Of"]
+    )
     main["Grade_Housing_Production"] = main["Grade_Housing_Production"].astype("category")
     main["not_for_the_dashboard"] = 1
     main = main[sorted(main.columns)]
 
-    out = build_dashboard_main(main, "26Q2.1", {"data_updated_at": "2026-09-30T19:21:51+00:00"})
+    out = build_dashboard_main(
+        main,
+        "26Q2.1",
+        affordable_source_info={"data_updated_at": "2026-09-30T19:21:51+00:00"},
+        council_source_info={"data_updated_at": "2026-04-10T15:00:00+00:00"},
+    )
 
     assert list(out.columns) == list(DASHBOARD_COLUMNS)
     assert out["Housing_Data_Version"].tolist() == ["26Q2.1"] * 2
     assert out["Housing_Data_As_Of"].tolist() == ["June 30, 2026"] * 2
     assert out["Affordable_Data_As_Of"].tolist() == ["September 30, 2026"] * 2
+    assert out["Council_Members_As_Of"].tolist() == ["April 10, 2026"] * 2
 
-    csv = out.to_csv(index=False).splitlines()
-    assert csv[0].split(",")[:2] == ["District_Type", "District_Value"]
-    first, second = (dict(zip(csv[0].split(","), line.split(","))) for line in csv[1:])
+    import csv as csv_module, io
+
+    first, second = csv_module.DictReader(io.StringIO(out.to_csv(index=False)))
+    assert list(first)[:2] == ["District_Type", "District_Value"]
     # integers stay whole numbers, reals keep a decimal, nulls are empty
     assert first["Project_Completion_Year"] == "2022" and first["Housing_Units"] == "120"
     assert first["Pctl_Weighted_Transit"] == "86.0"
     assert first["Rank_Total_Housing_Units"] == "1" and first["District_Count"] == "51"
+    assert first["Is_Placeholder"] == "0" and first["Neighborhoods"] == "Greenpoint, Williamsburg"
     assert second["Project_Completion_Year"] == "" and second["Housing_Units"] == ""
     assert first["Grade_Housing_Production"] == "B" and first["Grade_Affordable_Housing_Production"] == ""
 

@@ -37,6 +37,11 @@ DATASETS = {
         "filename": "Affordable_Housing_Production_by_Building.csv",
         "title": "HPD Affordable Housing Production by Building",
     },
+    "council_members": {
+        "dataset_id": "uvw5-9znb",
+        "filename": "City_Council_Members.csv",
+        "title": "NYC Council: City Council Members (1999 to Present)",
+    },
 }
 
 

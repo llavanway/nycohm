@@ -34,6 +34,7 @@ def dashboard_main(main, housingdb_post2010) -> Output[pd.DataFrame]:
         affordable_source_info=dataset_source_info(
             "affordable_housing_production_by_building"
         ),
+        council_source_info=dataset_source_info("council_members"),
     )
     written = write_dashboard_files(df)
 
@@ -45,6 +46,8 @@ def dashboard_main(main, housingdb_post2010) -> Output[pd.DataFrame]:
         "housing_data_version": str(housing_version),
         "housing_data_as_of": df["Housing_Data_As_Of"].iloc[0],
         "affordable_data_as_of": df["Affordable_Data_As_Of"].iloc[0],
+        "council_members_as_of": df["Council_Members_As_Of"].iloc[0],
+        "placeholder_rows": int(df["Is_Placeholder"].sum()),
         "preview": MetadataValue.md(df.head(10).to_markdown(index=False)),
     }
     return Output(df, metadata=metadata)

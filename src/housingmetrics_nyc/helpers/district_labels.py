@@ -1,12 +1,17 @@
-"""Human-readable names for the districts shown on the dashboard.
+"""Names and descriptions for the districts shown on the dashboard.
 
 The pipeline keys every district by an ID (council district "33", community
 district "301", census tract "36047055500"). Those IDs are what the map joins
-on, but they mean little to a reader, so each one also gets a label:
+on, but they mean little to a reader, so each district also gets:
 
-    Council_District    "Council District 33"
-    Community_District  "Brooklyn CD 1 (Williamsburg-Greenpoint)"
-    Census_Tract        "Brooklyn Tract 555 (Williamsburg)"
+    District_Label   a unique readable name
+        "Council District 33 (Lincoln Restler)"
+        "Brooklyn Community District 1"
+        "Brooklyn Census Tract 555"
+    Council_Member   the sitting member, for council districts
+    Neighborhoods    the neighborhoods the district covers
+    Residential      whether people live there (parks, airports, cemeteries and
+                     other non-residential areas are False)
 
 Labels are unique across all three district types, so the dashboard can use
 the label alone to identify a district.
@@ -18,8 +23,21 @@ import re
 
 import pandas as pd
 
-LABEL_COLUMNS = ["District_Type", "District_Value", "District_Label"]
+DISTRICT_COLUMNS = [
+    "District_Type",
+    "District_Value",
+    "District_Label",
+    "Council_Member",
+    "Neighborhoods",
+    "Residential",
+]
 UNASSIGNED_LABEL = "Unassigned"
+NO_MEMBER_LISTED = "no member listed"
+
+# A council district's neighborhoods are the residential neighborhoods (NTAs)
+# holding at least this share of its population, largest first.
+NEIGHBORHOOD_MIN_SHARE = 0.10
+NEIGHBORHOOD_MAX_COUNT = 4
 
 # CDTA code prefix -> (borough code, borough name)
 _CDTA_BOROUGH = {
@@ -29,6 +47,10 @@ _CDTA_BOROUGH = {
     "QN": (4, "Queens"),
     "SI": (5, "Staten Island"),
 }
+# CDTAType 'CD' is a community district; 'JIA' is a joint interest area, one of
+# the large parks and airports that sit outside the community districts
+_CDTA_KIND = {"CD": "Community District", "JIA": "Joint Interest Area"}
+_RESIDENTIAL_NTA_TYPE = "0"  # other NTA types are parks, cemeteries, airports and the like
 
 _FALLBACK_PREFIX = {
     "Council_District": "Council District",
@@ -51,27 +73,69 @@ def _tract_number(geoid: str) -> str:
     return str(base) if suffix == "00" else f"{base}.{suffix}"
 
 
+def _council_neighborhoods(tracts: pd.DataFrame) -> pd.Series:
+    """
+    Neighborhood list per council district, e.g. 'Greenpoint, Williamsburg'.
+
+    tracts: one row per census tract with Council_District, NTAName,
+    residential_nta (bool) and population.
+    """
+    residential = tracts[tracts["residential_nta"] & tracts["Council_District"].notna()]
+    by_nta = (
+        residential.groupby(["Council_District", "NTAName"], as_index=False)["population"].sum()
+    )
+    by_nta["share"] = by_nta["population"] / by_nta.groupby("Council_District")[
+        "population"
+    ].transform("sum")
+    by_nta = by_nta.sort_values(
+        ["Council_District", "population", "NTAName"], ascending=[True, False, True]
+    )
+    # always keep a district's largest neighborhood, then any others that are big enough
+    rank = by_nta.groupby("Council_District").cumcount()
+    keep = (rank == 0) | ((by_nta["share"] >= NEIGHBORHOOD_MIN_SHARE) & (rank < NEIGHBORHOOD_MAX_COUNT))
+    return by_nta[keep].groupby("Council_District")["NTAName"].agg(", ".join)
+
+
 def build_district_labels(
-    tract_crosswalk: pd.DataFrame, council_districts
+    tract_crosswalk: pd.DataFrame,
+    tract_to_council: pd.DataFrame,
+    population: pd.DataFrame,
+    council_members: pd.DataFrame,
 ) -> pd.DataFrame:
     """
-    Build one label per district.
+    Build one row per district.
 
     tract_crosswalk: DCP's 2020 census tract to NTA/CDTA relationship file
-        (GEOID, BoroCode, BoroName, NTAName, CDTACode, CDTAType, CDTAName).
-    council_districts: iterable of council district numbers.
+        (GEOID, BoroName, NTAName, NTAType, CDTACode, CDTAType, CDTAName).
+    tract_to_council: Census_Tract, Council_District.
+    population: Census_Tract, P1_001N (2020 census population).
+    council_members: Council_District, Council_Member for the sitting members.
     """
     cw = tract_crosswalk.copy()
     cw["GEOID"] = cw["GEOID"].astype("Int64").astype(str)
+    cw["residential_nta"] = (
+        pd.to_numeric(cw["NTAType"], errors="coerce").astype("Int64").astype(str)
+        == _RESIDENTIAL_NTA_TYPE
+    )
+    pop = population.assign(Census_Tract=population["Census_Tract"].astype(str))
+    cw = cw.merge(
+        pop[["Census_Tract", "P1_001N"]].rename(columns={"Census_Tract": "GEOID", "P1_001N": "population"}),
+        on="GEOID",
+        how="left",
+    )
+    cw["population"] = pd.to_numeric(cw["population"], errors="coerce").fillna(0)
 
     tracts = pd.DataFrame(
         {
             "District_Type": "Census_Tract",
             "District_Value": cw["GEOID"],
             "District_Label": [
-                f"{boro} Tract {_tract_number(geoid)} ({nta})"
-                for boro, geoid, nta in zip(cw["BoroName"], cw["GEOID"], cw["NTAName"])
+                f"{boro} Census Tract {_tract_number(geoid)}"
+                for boro, geoid in zip(cw["BoroName"], cw["GEOID"])
             ],
+            "Council_Member": pd.NA,
+            "Neighborhoods": cw["NTAName"],
+            "Residential": cw["residential_nta"] & (cw["population"] > 0),
         }
     )
 
@@ -86,46 +150,66 @@ def build_district_labels(
         {
             "District_Type": "Community_District",
             "District_Value": [
-                f"{boro_code}{number:02d}"
-                for (boro_code, _), number in zip(cd_boro, cd_number)
+                f"{boro_code}{number:02d}" for (boro_code, _), number in zip(cd_boro, cd_number)
             ],
-            # CDTAType is 'CD' for community districts and 'JIA' for the joint
-            # interest areas (large parks and airports) that sit outside them
             "District_Label": [
-                f"{boro_name} {kind} {number} ({_cdta_place_name(name)})"
-                for (_, boro_name), kind, number, name in zip(
-                    cd_boro, cd["CDTAType"], cd_number, cd["CDTAName"]
-                )
+                f"{boro_name} {_CDTA_KIND.get(kind, kind)} {number}"
+                for (_, boro_name), kind, number in zip(cd_boro, cd["CDTAType"], cd_number)
             ],
+            "Council_Member": pd.NA,
+            "Neighborhoods": [_cdta_place_name(name) for name in cd["CDTAName"]],
+            "Residential": (cd["CDTAType"] == "CD").to_numpy(),
         }
     )
 
-    council_numbers = sorted({int(value) for value in council_districts if pd.notna(value)})
+    to_council = tract_to_council.assign(
+        GEOID=tract_to_council["Census_Tract"].astype(str),
+        Council_District=pd.to_numeric(tract_to_council["Council_District"], errors="coerce").astype("Int64"),
+    )[["GEOID", "Council_District"]]
+    council_tracts = cw.merge(to_council, on="GEOID", how="inner")
+    neighborhoods = _council_neighborhoods(council_tracts)
+    members = dict(
+        zip(
+            pd.to_numeric(council_members["Council_District"], errors="coerce").astype("Int64"),
+            council_members["Council_Member"],
+        )
+    )
+    council_numbers = sorted(int(n) for n in to_council["Council_District"].dropna().unique())
     council = pd.DataFrame(
         {
             "District_Type": "Council_District",
-            "District_Value": [str(number) for number in council_numbers],
-            "District_Label": [f"Council District {number}" for number in council_numbers],
+            "District_Value": [str(n) for n in council_numbers],
+            "District_Label": [
+                f"Council District {n} ({members.get(n) or NO_MEMBER_LISTED})" for n in council_numbers
+            ],
+            "Council_Member": [members.get(n, pd.NA) for n in council_numbers],
+            "Neighborhoods": [neighborhoods.get(n, pd.NA) for n in council_numbers],
+            "Residential": True,
         }
     )
 
-    labels = pd.concat([council, community, tracts], ignore_index=True)[LABEL_COLUMNS]
-    duplicated = labels["District_Label"].duplicated(keep=False)
+    districts = pd.concat([council, community, tracts], ignore_index=True)[DISTRICT_COLUMNS]
+    districts["Residential"] = districts["Residential"].astype(bool)
+    for column in ("Council_Member", "Neighborhoods"):
+        districts[column] = districts[column].astype("object").astype("string")
+    duplicated = districts["District_Label"].duplicated(keep=False)
     if duplicated.any():
         raise ValueError(
             "District labels must be unique: "
-            f"{sorted(labels.loc[duplicated, 'District_Label'].unique())[:5]}"
+            f"{sorted(districts.loc[duplicated, 'District_Label'].unique())[:5]}"
         )
-    return labels
+    return districts
 
 
-def add_district_labels(df: pd.DataFrame, labels: pd.DataFrame) -> pd.DataFrame:
+def add_district_labels(df: pd.DataFrame, districts: pd.DataFrame) -> pd.DataFrame:
     """
-    Add a District_Label column to a frame keyed by District_Type and
-    District_Value. Rows with no district get 'Unassigned'; a district missing
-    from the label table falls back to its type and ID, e.g. 'Census Tract 123'.
+    Add District_Label, Council_Member and Neighborhoods to a frame keyed by
+    District_Type and District_Value. Rows with no district get the label
+    'Unassigned'; a district missing from the table falls back to its type and
+    ID, e.g. 'Census Tract 123'.
     """
-    out = df.merge(labels[LABEL_COLUMNS], on=["District_Type", "District_Value"], how="left")
+    columns = ["District_Type", "District_Value", "District_Label", "Council_Member", "Neighborhoods"]
+    out = df.merge(districts[columns], on=["District_Type", "District_Value"], how="left")
     has_value = out["District_Value"].notna() & ~out["District_Value"].astype(str).isin(
         ["", "<NA>", "nan", "None"]
     )
@@ -136,3 +220,53 @@ def add_district_labels(df: pd.DataFrame, labels: pd.DataFrame) -> pd.DataFrame:
     label = label.where(label.notna(), fallback)
     out["District_Label"] = label.where(has_value, UNASSIGNED_LABEL).astype("string")
     return out
+
+
+# --- districts with no housing activity ------------------------------------
+
+_COUNTY_BOROUGH = {
+    "005": "Bronx",
+    "047": "Brooklyn",
+    "061": "Manhattan",
+    "081": "Queens",
+    "085": "Staten Island",
+}
+_BOROUGH_BY_CODE = {str(code): name for code, name in _CDTA_BOROUGH.values()}
+PLACEHOLDER_COMBINATIONS = [
+    (status, unit_type)
+    for status in ("Delivered", "In Progress")
+    for unit_type in ("New Units", "Preserved Units")
+]
+
+
+def _district_borough(district_type: str, district_value: str):
+    if district_type == "Census_Tract":
+        return _COUNTY_BOROUGH.get(str(district_value)[2:5], pd.NA)
+    if district_type == "Community_District":
+        return _BOROUGH_BY_CODE.get(str(district_value)[:1], pd.NA)
+    return pd.NA  # council districts can cross borough lines
+
+
+def placeholder_rows(districts: pd.DataFrame) -> pd.DataFrame:
+    """
+    Zero-unit rows for every residential district, one per delivery status and
+    unit type.
+
+    The dashboard only draws a district that has rows for the metric being
+    shown, so a district that produced nothing would otherwise be missing from
+    the map instead of showing as zero. Non-residential areas get no rows and
+    stay blank. Is_Placeholder marks these rows so that charts where a zero row
+    would add an empty year or borough can leave them out.
+    """
+    residential = districts.loc[districts["Residential"], ["District_Type", "District_Value"]]
+    combos = pd.DataFrame(PLACEHOLDER_COMBINATIONS, columns=["Delivery_Status", "Unit_Type"])
+    rows = residential.merge(combos, how="cross")
+    rows["Project_Start_Year"] = pd.array([pd.NA] * len(rows), dtype="Int64")
+    rows["Project_Completion_Year"] = pd.array([pd.NA] * len(rows), dtype="Int64")
+    rows["Borough"] = [
+        _district_borough(t, v) for t, v in zip(rows["District_Type"], rows["District_Value"])
+    ]
+    rows["Housing_Units"] = pd.array([0] * len(rows), dtype="Int64")
+    rows["Housing_Units_Affordable"] = pd.array([0] * len(rows), dtype="Int64")
+    rows["Is_Placeholder"] = 1
+    return rows

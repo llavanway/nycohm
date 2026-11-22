@@ -41,10 +41,24 @@ Columns the dashboard relies on beyond the housing counts:
 
 | Column | Used for |
 |---|---|
-| `District_Label` | Readable district names, such as "Brooklyn CD 1 (Williamsburg-Greenpoint)". Unique across all district types. |
+| `District_Label` | Readable district names: "Council District 33 (Lincoln Restler)", "Brooklyn Community District 1", "Brooklyn Census Tract 555". Unique across all district types. |
+| `Council_Member` | The sitting Council Member, for council districts |
+| `Neighborhoods` | The neighborhoods a district covers, shown in tooltips, Explore Data and District Trends, and searched by "Find a district" |
+| `Is_Placeholder` | 1 on the zero-unit rows that keep a district with no housing activity on the map; 0 on real rows |
 | `Rank_Total_Housing_Units`, `Rank_Total_Affordable_Housing_Units`, `District_Count` | "Rank 5 of 51" in the district detail panel |
 | `Housing_Data_Version`, `Housing_Data_As_Of` | DCP Housing Database release and the last day it covers, shown on the About tab |
 | `Affordable_Data_As_Of` | When HPD last updated its dataset on NYC Open Data, shown on the About tab |
+| `Council_Members_As_Of` | When the NYC Council last updated its member list on NYC Open Data, shown on the About tab |
+
+### Districts with no housing activity
+
+The map only draws a district that has rows for the metric being shown. So that a district which produced nothing shows as zero instead of going missing, every residential district gets four zero-unit rows (completed and in progress, new and preserved), marked `Is_Placeholder = 1`. Parks, airports, cemeteries and tracts with no residents get none and stay blank.
+
+These rows have no start or completion year. They appear under "Null" in the year filters; unchecking "Null" hides the districts with no activity again.
+
+### Council Members
+
+After a refresh, check the `council_members_clean` asset's metadata in Dagster for `districts_without_a_listed_member`. Any district listed there shows as "no member listed" on the dashboard until the Council updates its list or you add a row to `data/reference/council_member_overrides.csv`.
 
 ## If materializing fails after a column change
 

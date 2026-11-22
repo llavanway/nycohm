@@ -56,6 +56,10 @@ DASHBOARD_COLUMNS = {
     "Housing_Data_Version": "string",
     "Housing_Data_As_Of": "string",
     "Affordable_Data_As_Of": "string",
+    "Council_Member": "string",
+    "Neighborhoods": "string",
+    "Is_Placeholder": "integer",
+    "Council_Members_As_Of": "string",
 }
 
 _PANDAS_DTYPE = {"string": "string", "integer": "Int64", "real": "float64"}
@@ -71,9 +75,9 @@ def housing_data_as_of(version: str) -> str:
     return format_date(capture_date_from_version(version) - timedelta(days=1))
 
 
-def affordable_data_as_of(source_info: dict) -> str:
+def source_data_as_of(source_info: dict) -> str:
     """
-    When HPD last updated the affordable housing dataset, from the .source.json
+    When NYC Open Data last updated a downloaded dataset, from the .source.json
     written by fetch_data. Falls back to the download time, then to 'Unknown'
     for a file that was put in place by hand.
     """
@@ -82,13 +86,17 @@ def affordable_data_as_of(source_info: dict) -> str:
 
 
 def build_dashboard_main(
-    main: pd.DataFrame, housing_version: str, affordable_source_info: dict
+    main: pd.DataFrame,
+    housing_version: str,
+    affordable_source_info: dict,
+    council_source_info: dict,
 ) -> pd.DataFrame:
     """Shape the main table to the dashboard's contract and stamp it with data dates."""
     df = main.copy()
     df["Housing_Data_Version"] = str(housing_version)
     df["Housing_Data_As_Of"] = housing_data_as_of(housing_version)
-    df["Affordable_Data_As_Of"] = affordable_data_as_of(affordable_source_info)
+    df["Affordable_Data_As_Of"] = source_data_as_of(affordable_source_info)
+    df["Council_Members_As_Of"] = source_data_as_of(council_source_info)
 
     missing = [column for column in DASHBOARD_COLUMNS if column not in df.columns]
     if missing:

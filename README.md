@@ -7,12 +7,13 @@ Questions or issues? Email luke (at) housingmetrics.nyc
 
 ## Getting the data
 
-The two housing datasets are large and are republished regularly, so they are not stored in this repo. They are downloaded from NYC Open Data into `data/downloads/` (ignored by git):
+The housing datasets are large and are republished regularly, and the list of Council Members changes, so they are not stored in this repo. They are downloaded from NYC Open Data into `data/downloads/` (ignored by git):
 
 | Dataset | NYC Open Data ID | Updated |
 |---|---|---|
 | [DCP Housing Database Project Level Files](https://data.cityofnewyork.us/d/br6q-ssj3) | `br6q-ssj3` | Twice a year |
 | [HPD Affordable Housing Production by Building](https://data.cityofnewyork.us/d/hg8x-zxpr) | `hg8x-zxpr` | Quarterly |
+| [NYC Council: City Council Members (1999 to Present)](https://data.cityofnewyork.us/d/uvw5-9znb) | `uvw5-9znb` | When the Council updates it |
 
 Materializing the ingest assets downloads any file that is missing. To download them yourself, or to refresh to the latest release, run from the repo root:
 
@@ -22,6 +23,8 @@ python -m src.housingmetrics_nyc.fetch_data --force  # re-download the latest re
 ```
 
 Each download is checked against the row count NYC Open Data reports, and a `.source.json` file is written next to it recording the source URL and download time. After a refresh, re-materialize all assets. The direct CSV link for any dataset is `https://data.cityofnewyork.us/api/views/<ID>/rows.csv?accessType=DOWNLOAD`.
+
+Each council district is labeled with its sitting Council Member: the member whose term in the Council's list covers the day the list was downloaded. That list can lag behind a mid-term change such as a special election. To fill a gap, add a row to `data/reference/council_member_overrides.csv` (district, name, term start, optional term end, and where you confirmed it) and re-materialize.
 
 The smaller reference files (crosswalks, boundaries, census population, transit access) are static and remain in `data/`. All sources are listed in [docs/web_sources.md](docs/web_sources.md).
 

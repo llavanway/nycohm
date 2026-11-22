@@ -23,6 +23,7 @@ from src.housingmetrics_nyc.assets.new_york_36_transit_census_tract import asset
 from src.housingmetrics_nyc.assets.population_census_tract import assets_population_census_tract
 from src.housingmetrics_nyc.assets.crosswalk_census_tract_to_cd import assets_crosswalk_census_tract_to_cd
 from src.housingmetrics_nyc.assets.district_labels import assets_district_labels
+from src.housingmetrics_nyc.assets.council_members import assets_council_members
 from src.housingmetrics_nyc.assets.dashboard_export import assets_dashboard_export
 from .resources import DuckDBResource, BigQueryResource
 
@@ -66,6 +67,7 @@ defs = Definitions(
            assets_population_census_tract +
            assets_crosswalk_census_tract_to_cd +
            assets_geo_districts +
+           assets_council_members +
            assets_district_labels +
            assets_main +
            assets_dashboard_export
