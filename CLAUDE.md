@@ -25,7 +25,7 @@ The owner of this repository does not want Claude named in its git history or on
 Before finishing any task that made commits, check the result:
 
 ```bash
-git log origin/main..HEAD --format='%an %ae %cn %ce%n%B' | grep -i -E 'claude|anthropic'
+git log origin/main..HEAD --format='%an <%ae>%n%cn <%ce>%n%B' | grep -i -E '^claude <|anthropic\.com|^co-authored-by:.*claude|^claude-session:|claude\.ai|generated with'
 ```
 
-It should print nothing. If it prints anything, fix the commits before pushing.
+It should print nothing. If it prints anything, fix the commits before pushing. (A commit message may mention this file by name; that is not attribution.)
