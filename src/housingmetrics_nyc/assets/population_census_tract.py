@@ -3,24 +3,24 @@ import pandas as pd
 from datetime import datetime, timezone
 from dagster import asset, Output, MetadataValue, AssetExecutionContext, AssetIn
 import logging
-from src.nycohm.helpers.log_config import configure_logging
-from src.nycohm.helpers.prep_for_bq import sanitize_bq_columns
-from src.nycohm.helpers._read_csv import _read_csv
-from src.nycohm.helpers.handle_null import standardize_null_values
+from src.housingmetrics_nyc.helpers.log_config import configure_logging
+from src.housingmetrics_nyc.helpers.prep_for_bq import sanitize_bq_columns
+from src.housingmetrics_nyc.helpers._read_csv import _read_csv
+from src.housingmetrics_nyc.helpers.handle_null import standardize_null_values
 
 configure_logging()
 
-ingest_path = Path(__file__).resolve().parents[3] / 'data/crosswalk/nyc_2020_census_tract_nta_cdta_relationships.csv'
+ingest_path = Path(__file__).resolve().parents[3] / 'data/raw_csv/DECENNIALPL2020.P1-Data.csv'
 
 
 # ingest
 @asset(
-    name="crosswalk_census_tract_to_cd",
+    name="population_census_tract",
     io_manager_key="warehouse_io_manager",
     compute_kind="pandas",
     group_name="ingest_csv",
 )
-def crosswalk_census_tract_to_cd(context: AssetExecutionContext) -> Output[pd.DataFrame]:
+def population_census_tract(context: AssetExecutionContext) -> Output[pd.DataFrame]:
     df, csv_path = _read_csv(context, ingest_path)
 
     df, col_map = sanitize_bq_columns(df, lowercase=False)
@@ -42,29 +42,31 @@ def crosswalk_census_tract_to_cd(context: AssetExecutionContext) -> Output[pd.Da
 
 # process
 @asset(
-    ins={"crosswalk_census_tract_to_cd": AssetIn(key=["crosswalk_census_tract_to_cd"])},
-    name="crosswalk_census_tract_to_cd_clean",
+    ins={"population_census_tract": AssetIn(key=["population_census_tract"])},
+    name="population_census_tract_clean",
     io_manager_key="warehouse_io_manager",
     compute_kind="pandas",
     group_name="process",
 )
-def crosswalk_census_tract_to_cd_clean(crosswalk_census_tract_to_cd) -> Output[pd.DataFrame]:
-    df = crosswalk_census_tract_to_cd
+def population_census_tract_clean(population_census_tract) -> Output[pd.DataFrame]:
+    df = population_census_tract
     df = standardize_null_values(df)
 
-    logging.info(df.head(20).to_string())
+    # drop non-standard rows
+    df = df[df['GEO_ID'] != 'Geography']
+    df = df[df['GEO_ID'] != '0400000US36']
 
     # correct key formats
-    # transform community board key
-    df['borough_code'] = df['CDTACode'].str[:2]
-    df['board_number'] = df['CDTACode'].str[-2:]
-    df['Community_District'] = df['BoroCode'].astype(str) + df['board_number'].astype(str)
-    df['Community_District'] = df['Community_District'].astype('Int64').astype(str)
+    df['Census_Tract'] = (
+        df['GEO_ID'].astype(str)
+        .str.extract(r'(\d{11})$', expand=False)
+    ).astype(str)
 
-    df['Census_Tract'] = df['GEOID'].astype(str)
+    # adjust types
+    df['P1_001N'] = df['P1_001N'].astype('Int64')
 
     # keep only needed columns
-    df = df[['GEOID', 'Census_Tract', 'Community_District','NTAName']]
+    df = df[['Census_Tract', 'P1_001N']]
 
     metadata = {
         "rows": len(df),
@@ -74,4 +76,4 @@ def crosswalk_census_tract_to_cd_clean(crosswalk_census_tract_to_cd) -> Output[p
     return Output(df, metadata=metadata)
 
 
-assets_crosswalk_census_tract_to_cd = [crosswalk_census_tract_to_cd, crosswalk_census_tract_to_cd_clean]
+assets_population_census_tract = [population_census_tract, population_census_tract_clean]

@@ -1,4 +1,4 @@
 load_from:
   - python_file:
-      relative_path: src/nycohm/definitions.py
+      relative_path: src/housingmetrics_nyc/definitions.py
       attribute: defs

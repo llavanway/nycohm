@@ -3,9 +3,9 @@ Download the source datasets that are too large or change too often to commit.
 
 Usage, from the repository root:
 
-    python -m src.nycohm.fetch_data                # download any that are missing
-    python -m src.nycohm.fetch_data --force        # re-download all (data refresh)
-    python -m src.nycohm.fetch_data housing_database_project_level --force
+    python -m src.housingmetrics_nyc.fetch_data                # download any that are missing
+    python -m src.housingmetrics_nyc.fetch_data --force        # re-download all (data refresh)
+    python -m src.housingmetrics_nyc.fetch_data housing_database_project_level --force
 
 Files are written to data/downloads/, which is not tracked by git. The ingest
 assets call ensure_dataset(), so materializing them downloads a missing file
@@ -37,6 +37,11 @@ DATASETS = {
         "filename": "Affordable_Housing_Production_by_Building.csv",
         "title": "HPD Affordable Housing Production by Building",
     },
+    "council_members": {
+        "dataset_id": "uvw5-9znb",
+        "filename": "City_Council_Members.csv",
+        "title": "NYC Council: City Council Members (1999 to Present)",
+    },
 }
 
 
@@ -52,6 +57,16 @@ def _published_row_count(dataset_id: str) -> int:
     url = f"{NYC_OPEN_DATA}/resource/{dataset_id}.json?$select=count(*)%20as%20n"
     with urllib.request.urlopen(url, timeout=120) as response:
         return int(json.load(response)[0]["n"])
+
+
+def _data_updated_at(dataset_id: str) -> str | None:
+    """When NYC Open Data last changed the dataset's rows (not when we downloaded it)."""
+    url = f"{NYC_OPEN_DATA}/api/views/{dataset_id}.json"
+    with urllib.request.urlopen(url, timeout=120) as response:
+        updated = json.load(response).get("rowsUpdatedAt")
+    if updated is None:
+        return None
+    return datetime.fromtimestamp(int(updated), timezone.utc).isoformat(timespec="seconds")
 
 
 def _csv_row_count(path: Path) -> int:
@@ -93,6 +108,7 @@ def fetch_dataset(name: str) -> Path:
                 "dataset_page": dataset_page_url(source["dataset_id"]),
                 "download_url": url,
                 "downloaded_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+                "data_updated_at": _data_updated_at(source["dataset_id"]),
                 "rows": rows,
             },
             indent=2,
@@ -101,6 +117,12 @@ def fetch_dataset(name: str) -> Path:
     )
     logging.info("Saved %s rows to %s", rows, target)
     return target
+
+
+def dataset_source_info(name: str) -> dict:
+    """The .source.json written next to a download, or {} if there is none."""
+    info_path = dataset_path(name).with_name(dataset_path(name).name + ".source.json")
+    return json.loads(info_path.read_text()) if info_path.exists() else {}
 
 
 def ensure_dataset(name: str) -> Path:
